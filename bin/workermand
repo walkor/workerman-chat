@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Shanghai');
 
 if(empty($argv[1]))
 {
-    echo "Usage: serverd {start|stop|restart|reload|kill|status}\n";
+    echo "Usage: serverd {start|stop|restart|reload|kill|status}".PHP_EOL;
     exit;
 }
 
@@ -16,6 +16,19 @@ $cmd = $argv[1];
 define('WORKERMAN_ROOT_DIR', realpath(__DIR__."/../")."/");
 
 chdir(WORKERMAN_ROOT_DIR);
+
+require_once WORKERMAN_ROOT_DIR . "man/Core/Master.php";
+
+if(0 === strpos('win', strtolower(PHP_OS)))
+{
+    exit(Man\Core\Master::NAME . " can not run on Windows system\n");
+}
+
+if (!version_compare(PHP_VERSION, '5.3.0', '>='))
+{
+    exit(Man\Core\Master::NAME . ' PHP >= 5.3.0 required.' . PHP_EOL);
+}
+
 
 // ==pid-file==
 require_once WORKERMAN_ROOT_DIR . 'man/Core/Lib/Config.php';
@@ -36,7 +49,7 @@ define('WORKERMAN_LOG_DIR', $log_dir . '/');
 // ==ipc-key==
 if(!($ipc_key = Man\Core\Lib\Config::get('workerman.ipc_key')))
 {
-    $ipc_key = 0x70010a2e;
+    $ipc_key = fileinode(WORKERMAN_ROOT_DIR);
 }
 define('IPC_KEY', $ipc_key);
 
@@ -46,8 +59,6 @@ if(!($shm_size = Man\Core\Lib\Config::get('workerman.shm_size')))
     $shm_size = 393216;
 }
 define('DEFAULT_SHM_SIZE', $shm_size);
-
-require_once WORKERMAN_ROOT_DIR . "man/Core/Master.php";
 
 //检查pid对应的进程是否存在，不存在删除PID文件
 if($cmd != 'status' && is_file(WORKERMAN_PID_FILE))
@@ -59,10 +70,10 @@ if($cmd != 'status' && is_file(WORKERMAN_PID_FILE))
         {
             if(($start_pwuid = posix_getpwuid($stat['uid'])) && ($current_pwuid = posix_getpwuid(posix_getuid())))
             {
-                exit("\n\033[31;40mServer is started by user {$start_pwuid['name']}, {$current_pwuid['name']} can not $cmd Server, Permission denied\033[0m\n\n\033[31;40mServer $cmd failed\033[0m\n\n");
+                exit("\n\033[31;40mWorkerman is started by user {$start_pwuid['name']}, {$current_pwuid['name']} can not $cmd Workerman, Permission denied\033[0m\n\n\033[31;40mWorkerman $cmd failed\033[0m\n\n");
             }
         }
-        exit("Can not $cmd Server, Permission denied\n");
+        exit("Can not $cmd Workerman, Permission denied\n");
     }
     //检查pid进程是否存在
     if($pid = @file_get_contents(WORKERMAN_PID_FILE))
@@ -71,7 +82,7 @@ if($cmd != 'status' && is_file(WORKERMAN_PID_FILE))
         {
             if(!unlink(WORKERMAN_PID_FILE))
             {
-                exit("Can not $cmd Server\n\n");
+                exit("Can not $cmd Workerman\n\n");
             }
         }
     }
@@ -87,7 +98,7 @@ switch($cmd)
         $pid = @file_get_contents(WORKERMAN_PID_FILE);
         if(empty($pid))
         {
-            exit("Server not running?\n");
+            exit("Workerman not running?\n");
         }
         stop_and_wait();
         break;
@@ -114,7 +125,7 @@ switch($cmd)
         $sock = @stream_socket_client($address);
         if(!$sock)
         {
-            exit("\n\033[31;40mcan not connect to $address \033[0m\n\n\033[31;40mServer not running\033[0m\n\n");
+            exit("\n\033[31;40mcan not connect to $address \033[0m\n\n\033[31;40mWorkerman not running\033[0m\n\n");
         }
         fwrite($sock, 'status');
         $read_fds = array($sock);
