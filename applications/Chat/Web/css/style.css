@@ -2,3 +2,14 @@
 {
 	text-align:right;
 }
+
+#dialog
+{
+	min-height:600px;
+}
+
+.textarea
+{
+    height:6em;
+	width:61%;
+}
