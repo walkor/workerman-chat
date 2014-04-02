@@ -23,7 +23,7 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
-        output("onmessage: " + e.data);
+        output(e);
       };
       ws.onclose = function() {
         output("onclose");
