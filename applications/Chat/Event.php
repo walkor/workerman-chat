@@ -95,7 +95,7 @@ class Event
         
         switch($message_data['type'])
         {
-            // 用户登录 message格式: {type:add, name:xx} ，添加到用户，广播给所有用户xx进入聊天室
+            // 用户登录 message格式: {type:login, name:xx} ，添加到用户，广播给所有用户xx进入聊天室
             case 'login':
                 // 存储当前用户到用户列表
                 self::addUserToList($uid, $message_data['name']);

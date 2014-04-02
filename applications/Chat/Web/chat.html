@@ -20,7 +20,7 @@
    		  {
     		  return ws.close();
    		  }
-    	  ws.send('{"type":"add","name":"'+name+'"}');
+    	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
         output("onmessage: " + e.data);
@@ -45,7 +45,7 @@
     
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send(input.value);
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value+'"}');
       output("send: " + input.value);
       input.value = "";
       input.focus();
