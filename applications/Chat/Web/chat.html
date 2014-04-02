@@ -11,11 +11,16 @@
   <script type="text/javascript">
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
-    var ws;
+    var ws, name;
     function init() {
       ws = new WebSocket("ws://workerman.net:7272/");
       ws.onopen = function() {
-        output("onopen");
+    	  show_prompt();
+    	  if(!name)
+   		  {
+    		  return ws.close();
+   		  }
+    	  ws.send('{"type":"add","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
         output("onmessage: " + e.data);
@@ -27,6 +32,16 @@
         output("onerror");
       };
     }
+    
+    function show_prompt(){  
+        name = prompt('输入你的名字：', '默认名字');  
+        if(value == null){  
+            alert('你取消了输入！');  
+        }else if(value == ''){  
+            alert('姓名输入为空，请重新输入！');  
+            show_prompt();  
+        }
+    }  
     
     function onSubmit() {
       var input = document.getElementById("input");
@@ -58,7 +73,7 @@
 	           </div>
 	           <form onsubmit="onSubmit(); return false;">
                     <textarea class="textarea" class="thumbnail"></textarea>
-                    <div class="al-right"><input type="submit" class="btn btn-default" value="发表" /></div>
+                    <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
 	        </div>
 	        <div class="col-md-4 column">
