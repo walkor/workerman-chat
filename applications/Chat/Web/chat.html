@@ -11,7 +11,7 @@
   <script type="text/javascript">
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
-    var ws, name;
+    var ws, name, user_list;
     function init() {
       ws = new WebSocket("ws://workerman.net:7272/");
       ws.onopen = function() {
@@ -75,7 +75,8 @@
     {
     	for(var p in data)
    		{
-   		    alert(p['code']);
+   		    alert(p);
+   		     //user_list[]
    		}
     }
     
