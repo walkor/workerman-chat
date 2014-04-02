@@ -1,34 +1,23 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Sample of web_socket.js</title>
+  <title>PHP聊天室</title>
   <script type="text/javascript">WebSocket = null;</script>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
   <!-- Include these three JS files: -->
   <script type="text/javascript" src="/js/swfobject.js"></script>
   <script type="text/javascript" src="/js/web_socket.js"></script>
 
   <script type="text/javascript">
-    
-    // Set URL of your WebSocketMain.swf here:
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
-    // Set this to dump debug message from Flash to console.log:
     WEB_SOCKET_DEBUG = true;
-    
-    // Everything below is the same as using standard WebSocket.
-    
     var ws;
-    
     function init() {
-
-      // Connect to Web Socket.
-      // Change host/port here to your own Web Socket server.
       ws = new WebSocket("ws://workerman.net:7272/");
-
-      // Set event handlers.
       ws.onopen = function() {
         output("onopen");
       };
       ws.onmessage = function(e) {
-        // e.data contains received string.
         output("onmessage: " + e.data);
       };
       ws.onclose = function() {
@@ -37,12 +26,10 @@
       ws.onerror = function() {
         output("onerror");
       };
-
     }
     
     function onSubmit() {
       var input = document.getElementById("input");
-      // You can send message to the Web Socket using ws.send.
       ws.send(input.value);
       output("send: " + input.value);
       input.value = "";
@@ -61,11 +48,31 @@
     }
 
   </script>
-</head><body onload="init();">
-  <form onsubmit="onSubmit(); return false;">
-    <input type="text" id="input">
-    <input type="submit" value="Send">
-    <button onclick="onCloseClick(); return false;">close</button>
-  </form>
-  <div id="log"></div>
-</body></html>
+</head>
+<body onload="init();">
+    <div class="container">
+	    <div class="row clearfix">
+	        <div class="col-md-8 column">
+	           <div class="thumbnail">
+	               <div class="caption" id="dialog"></div>
+	           </div>
+	        <div >
+	        </div>
+	        <div class="col-md-4 column">
+	           <div class="thumbnail">
+                   <div class="caption" id="userlist"></div>
+               </div>
+	        </div>
+	    </div>
+	    <div class="row clearfix">
+	        <div class="col-md-12 column">
+		        <form onsubmit="onSubmit(); return false;">
+		             <textarea rows="5" cols="120"></textarea>
+		             <input type="submit" class="btn btn-default" value="发表"  class="al-right"/>
+		         </form>
+	        </div>
+	    </div>
+	    </div>
+    </div>
+</body>
+</html>
