@@ -35,16 +35,16 @@
     
     function show_prompt(){  
         name = prompt('输入你的名字：', '默认名字');  
-        if(value == null){  
+        if(name == null){  
             alert('你取消了输入！');  
-        }else if(value == ''){  
+        }else if(name == ''){  
             alert('姓名输入为空，请重新输入！');  
             show_prompt();  
         }
     }  
     
     function onSubmit() {
-      var input = document.getElementById("input");
+      var input = document.getElementById("textarea");
       ws.send(input.value);
       output("send: " + input.value);
       input.value = "";
@@ -72,7 +72,7 @@
 	               <div class="caption" id="dialog"></div>
 	           </div>
 	           <form onsubmit="onSubmit(); return false;">
-                    <textarea class="textarea" class="thumbnail"></textarea>
+                    <textarea class="textarea thumbnail" id="textarea"></textarea>
                     <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
 	        </div>
