@@ -13,3 +13,8 @@
     height:6em;
 	width:61%;
 }
+
+#userlist
+{
+	min-height:600px;
+}
