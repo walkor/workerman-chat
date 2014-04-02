@@ -23,8 +23,8 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
-        var data = eval('(' + e.data + ')');
-        alert(data);
+        //var data = eval('(' + e.data + ')');
+        alert(e.data);
       };
       ws.onclose = function() {
         output("onclose");
