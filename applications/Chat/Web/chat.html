@@ -23,8 +23,8 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
-        //var data = eval('(' + e.data + ')');
-        alert(e.data);
+        var data = eval('(' + e.data + ')');
+        //alert(e.data);
       };
       ws.onclose = function() {
         output("onclose");
@@ -58,9 +58,7 @@
     
     function output(str) {
       var log = document.getElementById("dialog");
-      var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
-        replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
-      log.innerHTML = escaped + "<br>" + log.innerHTML;
+      log.innerHTML = str + "<br>" + log.innerHTML;
     }
 
   </script>
