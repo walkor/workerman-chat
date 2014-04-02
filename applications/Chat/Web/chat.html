@@ -24,7 +24,12 @@
       };
       ws.onmessage = function(e) {
         var data = eval('(' + e.data + ')');
-        alert(data);
+        switch(data['type'])
+        {
+              case 'user_list':
+            	  flush_user_list(data);
+            	  break;
+        }
       };
       ws.onclose = function() {
         output("onclose");
@@ -60,6 +65,17 @@
       var log = document.getElementById("dialog");
       log.innerHTML = str + "<br>" + log.innerHTML;
     }
+    
+    function add_user_list($data)
+    {
+    	
+    }
+    
+    function flush_user_list($data)
+    {
+        
+    }
+    
 
   </script>
 </head>
