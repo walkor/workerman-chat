@@ -24,7 +24,7 @@
       };
       ws.onmessage = function(e) {
         var data = eval('(' + e.data + ')');
-        //alert(e.data);
+        alert(data);
       };
       ws.onclose = function() {
         output("onclose");
