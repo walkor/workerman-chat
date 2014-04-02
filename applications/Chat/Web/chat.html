@@ -41,7 +41,7 @@
     }
     
     function output(str) {
-      var log = document.getElementById("log");
+      var log = document.getElementById("dialog");
       var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").
         replace(/>/, "&gt;").replace(/"/, "&quot;"); // "
       log.innerHTML = escaped + "<br>" + log.innerHTML;
@@ -57,7 +57,7 @@
 	               <div class="caption" id="dialog"></div>
 	           </div>
 	           <form onsubmit="onSubmit(); return false;">
-                    <textarea class="textarea"></textarea>
+                    <textarea class="textarea" class="thumbnail"></textarea>
                     <div class="al-right"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
 	        </div>
