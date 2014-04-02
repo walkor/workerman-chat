@@ -66,14 +66,17 @@
       log.innerHTML = str + "<br>" + log.innerHTML;
     }
     
-    function add_user_list($data)
+    function add_user_list(data)
     {
     	
     }
     
-    function flush_user_list($data)
+    function flush_user_list(data)
     {
-        
+    	for(var p in data)
+   		{
+   		    alert(p['code']);
+   		}
     }
     
 
