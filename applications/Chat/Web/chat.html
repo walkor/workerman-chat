@@ -73,11 +73,14 @@
     
     function flush_user_list(data)
     {
-    	for(var p in data)
-   		{
-   		    alert(data[p]);
-   		     //user_list[]
-   		}
+    	if('user_list' in data)
+    	{
+	    	for(var p in data['user_list'])
+	   		{
+	   		    alert(data['user_list'][p]);
+	   		     //user_list[]
+	   		}
+        }
     }
     
 
