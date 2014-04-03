@@ -36,6 +36,9 @@
               case 'say':
             	  say(data['uid'], data['to_uid'], data['content'], data['time']);
             	  break;
+              case 'logout:
+            	  if(user_list[data['uid']])
+            	  say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']');
         }
       };
       ws.onclose = function() {
