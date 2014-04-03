@@ -11,9 +11,7 @@
   <script type="text/javascript">
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
-    ws, name, user_list={};
-    userlist_window =  document.getElementById("userlist"); 
-    dialog_window = document.getElementById("dialog"); 
+    var ws, name, user_list={};
     function init() {
       ws = new WebSocket("ws://workerman.net:7272/");
       ws.onopen = function() {
@@ -80,6 +78,7 @@
     }
     
     function flush_user_list_window(){
+    	var userlist_window = document.getElementById("userlist");
     	userlist_window.innerHtml = '<ul>';
     	for(var p in user_list){
     		userlist_window.innerHtml += '<li>'+user_list[p]['name']+'</li>';
@@ -88,6 +87,7 @@
     }
     
     function say(from_uid, to_uid, content, time){
+    	var dialog_window = document.getElementById("dialog"); 
     	switch(to_uid){
     		   case 'all':
     			   dialog_window.innerHtml += content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>';
