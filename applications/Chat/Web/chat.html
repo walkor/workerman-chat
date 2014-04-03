@@ -32,7 +32,7 @@
             	  break;
               case 'login':
             	  add_user_list(data);
-                  say(data['uid'], 'all', data['name'], data['time']);
+                  say(data['uid'], 'all', data['name']+'加入了聊天室', data['time']);
                   break;
               case 'say':
             	  say(data['uid'], data['to_uid'], data['content'], data['time']);
@@ -107,7 +107,7 @@
     			   break;
     		   default :
     			   if(user_list[data['uid']]){
-    				   dialog_window.innerHTML += user_list[data['uid']]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>';
+    				   dialog_window.innerHTML += '<div class="words">'+user_list[data['uid']]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
    				   }
     	}
     }
