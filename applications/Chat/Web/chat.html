@@ -18,16 +18,14 @@
       ws = new WebSocket("ws://workerman.net:7272/");
       ws.onopen = function() {
     	  show_prompt();
-    	  if(!name)
-   		  {
+    	  if(!name) {
     		  return ws.close();
    		  }
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
         var data = eval('(' + e.data + ')');
-        switch(data['type'])
-        {
+        switch(data['type']){
               case 'user_list':
             	  flush_user_list(data);
             	  break;
@@ -66,14 +64,12 @@
       log.innerHTML = str + "<br>" + log.innerHTML;
     }
     
-    function add_user_list(data)
-    {
+    function add_user_list(data){
     	user_list['_'+data['uid']] = data['name'];
     	flush_user_list_window();
     }
     
-    function flush_user_list(data)
-    {
+    function flush_user_list(data){
     	user_list = {};
     	if('user_list' in data)
     	{
@@ -85,33 +81,25 @@
     	flush_user_list_window();
     }
     
-    function flush_user_list_window()
-    {
+    function flush_user_list_window(){
     	userlist_window.innerHtml = '<ul>';
-    	for(var p in user_list)
-        {
+    	for(var p in user_list){}
     		userlist_window.innerHtml += '<li>'+user_list[p]['name']+'</li>';
         }
     	userlist_window.innerHtml += '<\ul>';
     }
     
-    function say(from_uid, to_uid, content, time)
-    {
-    	switch(to_uid)
-    	{
+    function say(from_uid, to_uid, content, time){
+    	switch(to_uid){
     		   case 'all':
-    			   dialog_window.innerHtml += content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>'；
+    			   dialog_window.innerHtml += content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>';
     			   break;
     		   default :
-    			   if(user_list[data['uid']])
-   				   {
-    				   dialog_window.innerHtml += user_list[data['uid']]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>'；
+    			   if(user_list[data['uid']]){
+    				   dialog_window.innerHtml += user_list[data['uid']]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>';
    				   }
-    			   
     	}
-    	
     }
-
   </script>
 </head>
 <body onload="init();">
