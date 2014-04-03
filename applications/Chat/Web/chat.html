@@ -80,6 +80,7 @@
     function flush_user_list_window(){
     	var userlist_window = document.getElementById("userlist");
     	userlist_window.innerHtml = '<ul>';
+    	alert(user_list);
     	for(var p in user_list){
     		userlist_window.innerHtml += '<li>'+user_list[p]['name']+'</li>';
         }
