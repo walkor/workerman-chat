@@ -24,7 +24,7 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
-    	//output(e.data);
+    	  console.log(e.data);
         var data = eval('(' + e.data + ')');
         switch(data['type']){
               case 'user_list':
@@ -62,7 +62,6 @@
     function onSubmit() {
       var input = document.getElementById("textarea");
       ws.send('{"type":"say","to_uid":"all","content":"'+input.value+'"}');
-      output("send: " + input.value);
       input.value = "";
       input.focus();
     }
