@@ -1,7 +1,9 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>PHP聊天室</title>
-  <script type="text/javascript">WebSocket = null;</script>
+  <script type="text/javascript">
+  //WebSocket = null;
+  </script>
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/style.css" rel="stylesheet">
   <!-- Include these three JS files: -->
@@ -22,6 +24,7 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
+    	output(e.data);
         var data = eval('(' + e.data + ')');
         switch(data['type']){
               case 'user_list':
@@ -82,7 +85,6 @@
     	userlist_window.innerHTML = '<ul>';
     	for(var p in user_list){
     		userlist_window.innerHTML += '<li>'+user_list[p]['name']+'</li>';
-    		alert(userlist_window.innerHTML);
         }
     	userlist_window.innerHTML += '</ul>';
     }
