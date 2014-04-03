@@ -31,6 +31,7 @@
             	  flush_user_list(data);
             	  break;
               case 'login':
+            	  add_user_list(data);
                   say(data['uid'], 'all', data['name'], data['time']);
                   break;
               case 'say':
