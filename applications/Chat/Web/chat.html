@@ -24,7 +24,7 @@
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
       ws.onmessage = function(e) {
-    	output(e.data);
+    	//output(e.data);
         var data = eval('(' + e.data + ')');
         switch(data['type']){
               case 'user_list':
@@ -75,8 +75,14 @@
       log.innerHTML = str + "<br>" + log.innerHTML;
     }
     
-    function add_user_list(data){
-    	user_list['_'+data['uid']] = data['name'];
+    function add_user_list(uid, name){
+    	user_list['_'+uid] = name;
+    	flush_user_list_window();
+    }
+    
+    function del_user_list(uid)
+    {
+    	delete user_list['_'+uid];
     	flush_user_list_window();
     }
     
@@ -103,7 +109,7 @@
     	var dialog_window = document.getElementById("dialog"); 
     	switch(to_uid){
     		   case 'all':
-    			   dialog_window.innerHTML += content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font>';
+    			   '<div class="words">'+dialog_window.innerHTML += content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
     			   break;
     		   default :
     			   if(user_list[data['uid']]){
