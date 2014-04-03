@@ -11,9 +11,9 @@
   <script type="text/javascript">
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
-    var ws, name, user_list={};
-    var userlist_window =  document.getElementById("userlist"); 
-    var dialog_window = document.getElementById("dialog"); 
+    ws, name, user_list={};
+    userlist_window =  document.getElementById("userlist"); 
+    dialog_window = document.getElementById("dialog"); 
     function init() {
       ws = new WebSocket("ws://workerman.net:7272/");
       ws.onopen = function() {
