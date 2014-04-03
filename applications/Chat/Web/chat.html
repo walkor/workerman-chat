@@ -109,13 +109,13 @@
     	var dialog_window = document.getElementById("dialog"); 
     	switch(to_uid){
     		   case 'all':
-    			   if(user_list[from_uid]){
-    				   dialog_window.innerHTML +=  '<div class="words">'+user_list[from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
+    			   if(user_list['_'+from_uid]){
+    				   dialog_window.innerHTML +=  '<div class="words">'+user_list['_'+from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
     			   }
     			   break;
     		   default :
-    			   if(user_list[from_uid]){
-    				   dialog_window.innerHTML += '<div class="words">'+user_list[from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
+    			   if(user_list['_'+from_uid]){
+    				   dialog_window.innerHTML += '<div class="words">'+user_list['_'+from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
    				   }
     	}
     }
