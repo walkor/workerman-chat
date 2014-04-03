@@ -43,6 +43,12 @@ class Store
         unset(self::$dataCache[$key]);
         return self::writeToDisk();
     }
+    
+    public static function deleteAll()
+    {
+        self::$dataCache = array();
+        self::writeToDisk();
+    }
    
     protected static function writeToDisk()
     {

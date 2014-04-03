@@ -287,4 +287,9 @@ class ChatGateway extends Man\Core\SocketWorker
             echo $str."\n";
         }
     }
+    
+    public function onStop()
+    {
+        Store::deleteAll();
+    }
 }
