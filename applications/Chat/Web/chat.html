@@ -30,6 +30,12 @@
               case 'user_list':
             	  flush_user_list(data);
             	  break;
+              case 'login':'
+                  say(data['uid'], 'all', data['name'], data['time']);
+                  break;
+              case 'say':
+            	  say(data['uid'], data['to_uid'], data['content'], data['time']);
+            	  break;
         }
       };
       ws.onclose = function() {
@@ -84,7 +90,7 @@
     	var userlist_window = document.getElementById("userlist");
     	userlist_window.innerHTML = '<ul>';
     	for(var p in user_list){
-    		userlist_window.innerHTML += '<li>'+user_list[p]['name']+'</li>';
+    		userlist_window.innerHTML += '<li id="'+p+'">'+user_list[p]+'</li>';
         }
     	userlist_window.innerHTML += '</ul>';
     }
