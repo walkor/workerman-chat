@@ -71,10 +71,8 @@
     
     function flush_user_list(data){
     	user_list = {};
-    	if('user_list' in data)
-    	{
-	    	for(var p in data['user_list'])
-	   		{
+    	if('user_list' in data){
+	    	for(var p in data['user_list']){
 	   	 	    user_list['_'+data['user_list'][p]['uid']] = data['user_list'][p]['name'];
 	   		}
         }
@@ -83,7 +81,7 @@
     
     function flush_user_list_window(){
     	userlist_window.innerHtml = '<ul>';
-    	for(var p in user_list){}
+    	for(var p in user_list){
     		userlist_window.innerHtml += '<li>'+user_list[p]['name']+'</li>';
         }
     	userlist_window.innerHtml += '<\ul>';
