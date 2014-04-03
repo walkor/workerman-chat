@@ -107,7 +107,7 @@ class Event
                 {
                     foreach($user_list as $tmp_uid=>$name)
                     {
-                        $all_users[] = array('code'=>$tmp_uid, 'name'=>$name);
+                        $all_users[] = array('uid'=>$tmp_uid, 'name'=>$name);
                     }
                 }
                 
