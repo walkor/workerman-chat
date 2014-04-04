@@ -9,6 +9,7 @@
   <!-- Include these three JS files: -->
   <script type="text/javascript" src="/js/swfobject.js"></script>
   <script type="text/javascript" src="/js/web_socket.js"></script>
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
 
   <script type="text/javascript">
     if (typeof console == "undefined") {    this.console = { log: function (msg) {  } };}
@@ -109,7 +110,7 @@
     	switch(to_uid){
     		   case 'all':
     			   if(user_list['_'+from_uid]){
-    				   dialog_window.innerHTML +=  '<div class="words">'+user_list['_'+from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
+    				   dialog_window.innerHTML +=  user_list['_'+from_uid]+'<div class="send"><div class="arrow"></div>'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
     			   }
     			   break;
     		   default :

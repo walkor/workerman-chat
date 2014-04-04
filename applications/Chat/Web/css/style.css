@@ -24,3 +24,23 @@
 {
 	margin:8px;
 }
+
+.send {
+	position:relative;
+	width:150px;
+	height:35px;
+	background:#F8C301;
+	border-radius:5px; 
+	margin:30px auto 0;
+}
+
+.send .arrow {
+	position:absolute;
+	top:5px;
+	right:-16px; 
+	width:0;
+	height:0;
+	font-size:0;
+	border:solid 8px;
+	border-color:#4D4948 #4D4948 #4D4948 #F8C301;
+}

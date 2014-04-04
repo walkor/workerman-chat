@@ -127,7 +127,7 @@ class Event
                         'type'=>'say',
                         'from_uid'=>$uid, 
                         'to_uid'=>$message_data['to_uid'],
-                        'content'=>$message_data['content'],
+                        'content'=>nl2br(htmlspecialchars($message_data['content'])),
                         'time'=>date('Y-m-d :i:s'),
                     );
                     return Gateway::sendToUid($message_data['to_uid'], json_encode($new_message));
@@ -137,7 +137,7 @@ class Event
                     'type'=>'say', 
                     'from_uid'=>$uid,
                     'to_uid'=>'all',
-                    'content'=>$message_data['content'],
+                    'content'=>nl2br(htmlspecialchars($message_data['content'])),
                     'time'=>date('Y-m-d :i:s'),
                 );
                 return Gateway::sendToAll(json_encode($new_message));
