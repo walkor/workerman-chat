@@ -11,6 +11,7 @@
   <script type="text/javascript" src="/js/web_socket.js"></script>
 
   <script type="text/javascript">
+    if (typeof console == "undefined") {    this.console = { log: function (msg) {  } };}
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     WEB_SOCKET_DEBUG = true;
     var ws, name, user_list={};
@@ -28,6 +29,7 @@
         var data = eval('(' + e.data + ')');
         switch(data['type']){
               case 'user_list':
+            	  //{"type":"user_list","user_list":[{"uid":xxx,"name":"xxx"},{"uid":xxx,"name":"xxx"}]}
             	  flush_user_list(data);
             	  break;
               case 'login':
@@ -36,20 +38,20 @@
                   say(data['uid'], 'all', 'Hi 我来了！', data['time']);
                   break;
               case 'say':
-            	  //{"type":"user_list","user_list":[{"uid":xxx,"name":"xxx"},{"uid":xxx,"name":"xxx"}]}
+            	  //{"type":"say","from_uid":xxx,"to_uid":"all/uid","content":"xxx","time":"xxx"}
             	  say(data['from_uid'], data['to_uid'], data['content'], data['time']);
             	  break;
               case 'logout':
-            	  
+            	  //{"type":"logout","uid":xxx,"time":"xxx"}
          		 say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
          		 del_user_list(data['uid']);
         }
       };
       ws.onclose = function() {
-        output("onclose");
+    	  console.log("服务端关闭了连接");
       };
       ws.onerror = function() {
-        output("onerror");
+    	  console.log("出现错误");
       };
     }
     
@@ -70,11 +72,6 @@
     
     function onCloseClick() {
       ws.close();
-    }
-    
-    function output(str) {
-      var log = document.getElementById("dialog");
-      log.innerHTML = str + "<br>" + log.innerHTML;
     }
     
     function add_user_list(uid, name){
