@@ -31,18 +31,18 @@
             	  flush_user_list(data);
             	  break;
               case 'login':
+                  //{"type":"login","uid":xxx,"name":"xxx","time":"xxx"}
             	  add_user_list(data['uid'], data['name']);
-                  say(data['uid'], 'all', data['name']+'Hi 我来了！', data['time']);
+                  say(data['uid'], 'all', 'Hi 我来了！', data['time']);
                   break;
               case 'say':
+            	  //{"type":"user_list","user_list":[{"uid":xxx,"name":"xxx"},{"uid":xxx,"name":"xxx"}]}
             	  say(data['from_uid'], data['to_uid'], data['content'], data['time']);
             	  break;
               case 'logout':
-            	  if(user_list[data['uid']])
-           		  {
-            		     say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
-            		     del_user_list(data['uid']);
-           		  }
+            	  
+         		 say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
+         		 del_user_list(data['uid']);
         }
       };
       ws.onclose = function() {
@@ -54,7 +54,7 @@
     }
     
     function show_prompt(){  
-        name = prompt('输入你的名字：', '默认名字');  
+        name = prompt('输入你的名字：', '');
         if(!name){  
             alert('姓名输入为空，请重新输入！');  
             show_prompt();  
@@ -111,9 +111,9 @@
     	var dialog_window = document.getElementById("dialog"); 
     	switch(to_uid){
     		   case 'all':
-    			   //if(user_list['_'+from_uid]){
+    			   if(user_list['_'+from_uid]){
     				   dialog_window.innerHTML +=  '<div class="words">'+user_list['_'+from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
-    			   //}
+    			   }
     			   break;
     		   default :
     			   if(user_list['_'+from_uid]){

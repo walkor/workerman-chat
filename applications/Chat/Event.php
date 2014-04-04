@@ -115,7 +115,7 @@ class Event
                 Gateway::sendToUid($uid, json_encode(array('type'=>'user_list', 'user_list'=> $all_users)));
                 
                 // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx}
-                Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>$message_data['name'], 'time'=>date('Y-m-d :i:s'))));
+                Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>$message_data['name'], 'time'=>date('Y-m-d H:i:s'))));
                 return;
                 
             // 用户发言 message: {type:say, to_uid:xx, content:xx}
