@@ -110,7 +110,7 @@
     	switch(to_uid){
     		   case 'all':
     			   if(user_list['_'+from_uid]){
-    				   dialog_window.innerHTML +=  user_list['_'+from_uid]+'<div class="send"><div class="arrow"></div>'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
+    				   dialog_window.innerHTML +=  '<div class="send"><div class="arrow"></div>'+user_list['_'+from_uid]+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
     			   }
     			   break;
     		   default :
