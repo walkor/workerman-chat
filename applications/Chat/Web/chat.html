@@ -35,12 +35,14 @@
                   say(data['uid'], 'all', data['name']+'Hi 我来了！', data['time']);
                   break;
               case 'say':
-            	  say(data['uid'], data['to_uid'], data['content'], data['time']);
+            	  say(data['from_uid'], data['to_uid'], data['content'], data['time']);
             	  break;
               case 'logout':
             	  if(user_list[data['uid']])
-            	  say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
-            	  del_user_list(data['uid']);
+           		  {
+            		     say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
+            		     del_user_list(data['uid']);
+           		  }
         }
       };
       ws.onclose = function() {
