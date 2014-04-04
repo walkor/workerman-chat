@@ -43,7 +43,7 @@
             	  break;
               case 'logout':
             	  //{"type":"logout","uid":xxx,"time":"xxx"}
-         		 say(data['uid'], 'all', user_list[data['uid']]+'退出了', data['time']);
+         		 say(data['uid'], 'all', user_list['_'+data['uid']]+'退出了', data['time']);
          		 del_user_list(data['uid']);
         }
       };

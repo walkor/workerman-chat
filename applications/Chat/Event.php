@@ -114,7 +114,7 @@ class Event
                 // 发送给当前用户 内容是用户列表 message: {type:user_list, user_list:xxxx}
                 Gateway::sendToUid($uid, json_encode(array('type'=>'user_list', 'user_list'=> $all_users)));
                 
-                // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx}
+                // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx} 
                 Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>$message_data['name'], 'time'=>date('Y-m-d H:i:s'))));
                 return;
                 
