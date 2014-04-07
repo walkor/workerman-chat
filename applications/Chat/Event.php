@@ -87,7 +87,7 @@ class Event
         }
         $message = \App\Common\Protocols\WebSocket::decode($message);
         echo "uid:$uid onMessage:$message\n";
-        $message_data = json_decode($message, true);
+        $message_data = json_decode(str_replace("\n", '\n',$message), true);
         if(!$message_data)
         {
             return ;
