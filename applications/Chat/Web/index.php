@@ -1,6 +1,6 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>PHP聊天室</title>
+  <title>PHP聊天室-workerman</title>
   <script type="text/javascript">
   //WebSocket = null;
   </script>
@@ -17,7 +17,9 @@
     WEB_SOCKET_DEBUG = true;
     var ws, name, user_list={};
     function init() {
+       // 创建websocket
       ws = new WebSocket("ws://<?php echo $_SERVER['SERVER_ADDR']?>:7272/");
+      // 当socket连接打开时，输入用户名
       ws.onopen = function() {
     	  show_prompt();
     	  if(!name) {
@@ -25,23 +27,28 @@
    		  }
     	  ws.send('{"type":"login","name":"'+name+'"}');
       };
+      // 当有消息时根据消息类型显示不同信息
       ws.onmessage = function(e) {
     	  console.log(e.data);
         var data = eval('(' + e.data + ')');
         switch(data['type']){
+              // 展示用户列表
               case 'user_list':
             	  //{"type":"user_list","user_list":[{"uid":xxx,"name":"xxx"},{"uid":xxx,"name":"xxx"}]}
             	  flush_user_list(data);
             	  break;
+              // 登录
               case 'login':
                   //{"type":"login","uid":xxx,"name":"xxx","time":"xxx"}
             	  add_user_list(data['uid'], data['name']);
                   say(data['uid'], 'all',  data['name']+' 加入了聊天室', data['time']);
                   break;
+              // 发言
               case 'say':
             	  //{"type":"say","from_uid":xxx,"to_uid":"all/uid","content":"xxx","time":"xxx"}
             	  say(data['from_uid'], data['to_uid'], data['content'], data['time']);
             	  break;
+             // 用户退出 
               case 'logout':
             	  //{"type":"logout","uid":xxx,"time":"xxx"}
          		 say(data['uid'], 'all', user_list['_'+data['uid']]+' 退出了', data['time']);
@@ -55,7 +62,8 @@
     	  console.log("出现错误");
       };
     }
-    
+
+    // 输入姓名
     function show_prompt(){  
         name = prompt('输入你的名字：', '');
         if(!name){  
@@ -64,29 +72,29 @@
         }
         name = name.replace(/\"/g,'\\\\"');
     }  
-    
+
+    // 提交对话
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\\\"')+'"}');
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\"')+'"}');
       input.value = "";
       input.focus();
     }
-    
-    function onCloseClick() {
-      ws.close();
-    }
-    
+
+    // 将用户加如到当前用户列表
     function add_user_list(uid, name){
     	user_list['_'+uid] = name;
     	flush_user_list_window();
     }
-    
+
+    // 删除一个用户从用户列表
     function del_user_list(uid)
     {
     	delete user_list['_'+uid];
     	flush_user_list_window();
     }
-    
+
+    // 刷新用户列表数据
     function flush_user_list(data){
     	user_list = {};
     	if('user_list' in data){
@@ -96,7 +104,8 @@
         }
     	flush_user_list_window();
     }
-    
+
+    // 刷新用户列表框
     function flush_user_list_window(){
     	var userlist_window = document.getElementById("userlist");
     	userlist_window.innerHTML = '<ul>';
@@ -105,7 +114,8 @@
         }
     	userlist_window.innerHTML += '</ul>';
     }
-    
+
+    // 发言
     function say(from_uid, to_uid, content, time){
     	var dialog_window = document.getElementById("dialog"); 
     	switch(to_uid){
