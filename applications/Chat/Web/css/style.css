@@ -10,7 +10,7 @@ body
 
 #dialog
 {
-	min-height:600px;
+	min-height:400px;
 	background:#EEEEEE;
 }
 
@@ -22,13 +22,14 @@ body
 
 #userlist
 {
-	min-height:600px;
+	min-height:400px;
 	background:#EEEEEE;
 }
 
 #userlist > li
 {
 	color:#1372A2;
+	list-style:none;
 }
 
 #userlist > h4
