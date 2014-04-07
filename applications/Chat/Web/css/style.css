@@ -1,3 +1,7 @@
+body
+{
+	background:#FCFCFC;
+}
 .say-btn
 {
 	text-align:right;
@@ -19,6 +23,7 @@
 #userlist
 {
 	min-height:600px;
+	background:#EEEEEE;
 }
 
 .words
