@@ -28,7 +28,7 @@
 
 .triangle-isosceles {
     position:relative;
-    padding:12px;
+    padding:10px;
     margin:12px 0 15px;
     color:#000;
     background:#f3961c; /* default background for browsers without gradient support */
@@ -62,19 +62,19 @@
 .triangle-isosceles:after {
     content:"";
     position:absolute;
-    bottom:-12px;
+    bottom:-9px;
     left:15px;
-    border-width:12px 21px 0; 
+    border-width:9px 21px 0; 
     border-style:solid;
     border-color:#f3961c transparent;
     display:block; 
     width:0;
 }
 .triangle-isosceles.top:after {
-    top:-12px;
+    top:-9px;
     left:15px;
     bottom:auto;
-    border-width:0 12px 12px;
+    border-width:0 9px 9px;
     border-color:#f3961c transparent;
 }
 
