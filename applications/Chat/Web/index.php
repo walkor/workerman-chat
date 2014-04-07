@@ -17,7 +17,7 @@
     WEB_SOCKET_DEBUG = true;
     var ws, name, user_list={};
     function init() {
-      ws = new WebSocket("ws://<?php echo $_SERVER['HTTP_HOST']?>:7272/");
+      ws = new WebSocket("ws://<?php echo $_SERVER['SERVER_ADDR']?>:7272/");
       ws.onopen = function() {
     	  show_prompt();
     	  if(!name) {
