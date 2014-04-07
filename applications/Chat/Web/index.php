@@ -26,7 +26,7 @@
     	  if(!name) {
     		  return ws.close();
    		  }
-    	  ws.send(JSON.stringify({"type":"login","name":name});
+    	  ws.send(JSON.stringify({"type":"login","name":name}));
       };
       // 当有消息时根据消息类型显示不同信息
       ws.onmessage = function(e) {
@@ -77,7 +77,7 @@
     // 提交对话
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send(JSON.stringify({"type":"say","to_uid":"all","content":input.value});
+      ws.send(JSON.stringify({"type":"say","to_uid":"all","content":input.value}));
       input.value = "";
       input.focus();
     }
