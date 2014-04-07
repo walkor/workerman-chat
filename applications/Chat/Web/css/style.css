@@ -88,3 +88,11 @@ body
 {
 	float:left;border:1px solid #DDDDDD;padding:2px;margin:0 5px 0 5px;
 }
+
+.cp
+{
+	margin-top:50px;
+	color:666;
+	text-align:center;
+	font-size:11px;
+}
