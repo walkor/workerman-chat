@@ -28,7 +28,12 @@ body
 
 #userlist > li
 {
-	color:#000666;
+	color:#1372A2;
+}
+
+#userlist > h4
+{
+    text-align:center;
 }
 
 .words
