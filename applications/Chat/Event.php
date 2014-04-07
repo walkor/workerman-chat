@@ -87,7 +87,7 @@ class Event
         }
         $message = \App\Common\Protocols\WebSocket::decode($message);
         echo "uid:$uid onMessage:$message\n";
-        $message_data = json_decode(str_replace(array("\n","\\"), array('\n','\\'),$message), true);
+        $message_data = json_decode(str_replace(array("\n","\\"), array('\n','\\\\'),$message), true);
         if(!$message_data)
         {
             return ;
@@ -98,7 +98,7 @@ class Event
             // 用户登录 message格式: {type:login, name:xx} ，添加到用户，广播给所有用户xx进入聊天室
             case 'login':
                 // 存储当前用户到用户列表
-                self::addUserToList($uid, $message_data['name']);
+                self::addUserToList($uid, htmlspecialchars($message_data['name']));
                 // 获取用户列表
                 $user_list = self::getUserList();
                 // 整理用户列表以便显示
@@ -115,7 +115,7 @@ class Event
                 Gateway::sendToUid($uid, json_encode(array('type'=>'user_list', 'user_list'=> $all_users)));
                 
                 // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx} 
-                Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>$message_data['name'], 'time'=>date('Y-m-d H:i:s'))));
+                Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>htmlspecialchars($message_data['name']), 'time'=>date('Y-m-d H:i:s'))));
                 return;
                 
             // 用户发言 message: {type:say, to_uid:xx, content:xx}

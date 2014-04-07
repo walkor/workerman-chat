@@ -36,7 +36,7 @@
               case 'login':
                   //{"type":"login","uid":xxx,"name":"xxx","time":"xxx"}
             	  add_user_list(data['uid'], data['name']);
-                  say(data['uid'], 'all', 'Hi 我来了！', data['time']);
+                  say(data['uid'], 'all',  data['name']+' 加入了聊天室', data['time']);
                   break;
               case 'say':
             	  //{"type":"say","from_uid":xxx,"to_uid":"all/uid","content":"xxx","time":"xxx"}
@@ -44,7 +44,7 @@
             	  break;
               case 'logout':
             	  //{"type":"logout","uid":xxx,"time":"xxx"}
-         		 say(data['uid'], 'all', user_list['_'+data['uid']]+'退出了', data['time']);
+         		 say(data['uid'], 'all', user_list['_'+data['uid']]+' 退出了', data['time']);
          		 del_user_list(data['uid']);
         }
       };
@@ -60,13 +60,13 @@
         name = prompt('输入你的名字：', '');
         if(!name){  
             alert('姓名输入为空，请重新输入！');  
-            show_prompt();  
+            show_prompt();
         }
     }  
     
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace("\"",'\\"')+'"}');
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\"')+'"}');
       input.value = "";
       input.focus();
     }
