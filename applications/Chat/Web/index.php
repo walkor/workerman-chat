@@ -70,13 +70,13 @@
             alert('姓名输入为空，请重新输入！');  
             show_prompt();
         }
-        name = name.replace(/\"/g,'\\\\"');
+        name = name.replace(/\"/g,'\\"');
     }  
 
     // 提交对话
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\"')+'"}');
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value+'"}');
       input.value = "";
       input.focus();
     }
