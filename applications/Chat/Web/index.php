@@ -137,7 +137,7 @@
 <body onload="init();">
     <div class="container">
 	    <div class="row clearfix">
-	        <div class="col-md-2 column">
+	        <div class="col-md-1 column">
 	        </div>
 	        <div class="col-md-6 column">
 	           <div class="thumbnail">
@@ -149,7 +149,7 @@
                </form>
                <p class="cp">Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
 	        </div>
-	        <div class="col-md-2 column">
+	        <div class="col-md-3 column">
 	           <div class="thumbnail">
                    <div class="caption" id="userlist"></div>
                </div>
