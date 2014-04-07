@@ -66,7 +66,7 @@
     
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value+'"}');
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace("\n",'\n')+'"}');
       input.value = "";
       input.focus();
     }
@@ -113,9 +113,10 @@
     				   dialog_window.innerHTML +=  '<div class="speech_item"><img src="http://lorempixel.com/38/38/?'+from_uid+'" class="user_icon" /> '+user_list['_'+from_uid]+' <br> '+time+'<div style="clear:both;"></div><p class="triangle-isosceles top">'+content+'</p> </div>';
     			   }
     			   break;
+    		   // 私聊
     		   default :
     			   if(user_list['_'+from_uid]){
-    				   dialog_window.innerHTML += '<div class="words">'+user_list['_'+from_uid]+'说：'+ content + '  -<font style="font-size:11px;color:#AAAAAA">'+time+'</font></div>';
+    				   dialog_window.innerHTML +=  '<div class="speech_item"><img src="http://lorempixel.com/38/38/?'+from_uid+'" class="user_icon" /> '+user_list['_'+from_uid]+' <br> '+time+'<div style="clear:both;"></div><p class="triangle-isosceles top">'+content+'</p> </div>';
    				   }
     	}
     }

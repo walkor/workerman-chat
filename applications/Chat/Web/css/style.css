@@ -29,7 +29,7 @@
 .triangle-isosceles {
     position:relative;
     padding:10px;
-    margin:12px 0 15px;
+    margin:10px 0 15px;
     color:#000;
     background:#f3961c; /* default background for browsers without gradient support */
     background:-webkit-gradient(linear, 0 0, 0 100%, from(#f9d835), to(#f3961c));
