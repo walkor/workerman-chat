@@ -109,3 +109,8 @@ body
 	text-align:center;
 	font-size:11px;
 }
+
+.thumbnail
+{
+	border:1px solid #CCCCCC;
+}
