@@ -26,7 +26,7 @@ body
 	background:#EEEEEE;
 }
 
-#userlist li
+#userlist > li
 {
 	color:#000666;
 }
