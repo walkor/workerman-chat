@@ -137,7 +137,9 @@
 <body onload="init();">
     <div class="container">
 	    <div class="row clearfix">
-	        <div class="col-md-8 column">
+	        <div class="col-md-1 column">
+	        </div>
+	        <div class="col-md-6 column">
 	           <div class="thumbnail">
 	               <div class="caption" id="dialog"></div>
 	           </div>
