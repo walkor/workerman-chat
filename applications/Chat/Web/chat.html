@@ -62,11 +62,12 @@
             alert('姓名输入为空，请重新输入！');  
             show_prompt();
         }
+        name = name.replace(/\"/g,'\\\\"');
     }  
     
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\"')+'"}');
+      ws.send('{"type":"say","to_uid":"all","content":"'+input.value.replace(/\"/g,'\\\\"')+'"}');
       input.value = "";
       input.focus();
     }
