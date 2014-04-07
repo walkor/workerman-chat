@@ -139,7 +139,7 @@
 	    <div class="row clearfix">
 	        <div class="col-md-2 column">
 	        </div>
-	        <div class="col-md-5 column">
+	        <div class="col-md-6 column">
 	           <div class="thumbnail">
 	               <div class="caption" id="dialog"></div>
 	           </div>
