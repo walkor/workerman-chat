@@ -7,6 +7,7 @@
 #dialog
 {
 	min-height:600px;
+	background:#EEEEEE;
 }
 
 .textarea
@@ -31,11 +32,11 @@
     padding:10px;
     margin:10px 0 15px;
     color:#000;
-    background:#f3961c; /* default background for browsers without gradient support */
-    background:-webkit-gradient(linear, 0 0, 0 100%, from(#f9d835), to(#f3961c));
-    background:-moz-linear-gradient(#f9d835, #f3961c);
-    background:-o-linear-gradient(#f9d835, #f3961c);
-    background:linear-gradient(#f9d835, #f3961c);
+    background:#D3FF93; /* default background for browsers without gradient support */
+    background:-webkit-gradient(linear, 0 0, 0 100%, from(#EFFFD7), to(#D3FF93));
+    background:-moz-linear-gradient(#EFFFD7, #D3FF93);
+    background:-o-linear-gradient(#EFFFD7, #D3FF93);
+    background:linear-gradient(#EFFFD7, #D3FF93);
     -webkit-border-radius:10px;
     -moz-border-radius:10px;
     border-radius:10px;
@@ -53,10 +54,10 @@
     }  
 
 .triangle-isosceles.top {
-    background:-webkit-gradient(linear, 0 0, 0 100%, from(#f3961c), to(#f9d835));
-    background:-moz-linear-gradient(#f3961c, #f9d835);
-    background:-o-linear-gradient(#f3961c, #f9d835);
-    background:linear-gradient(#f3961c, #f9d835);
+    background:-webkit-gradient(linear, 0 0, 0 100%, from(#D3FF93), to(#EFFFD7));
+    background:-moz-linear-gradient(#D3FF93, #EFFFD7);
+    background:-o-linear-gradient(#D3FF93, #EFFFD7);
+    background:linear-gradient(#D3FF93, #EFFFD7);
 }
 
 .triangle-isosceles:after {
@@ -66,7 +67,7 @@
     left:15px;
     border-width:9px 21px 0; 
     border-style:solid;
-    border-color:#f3961c transparent;
+    border-color:#D3FF93 transparent;
     display:block; 
     width:0;
 }
@@ -75,7 +76,7 @@
     left:15px;
     bottom:auto;
     border-width:0 9px 9px;
-    border-color:#f3961c transparent;
+    border-color:#D3FF93 transparent;
 }
 
 .user_icon

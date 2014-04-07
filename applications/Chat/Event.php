@@ -69,7 +69,7 @@ class Event
        self::delUserFromList($uid);
 
        // 广播 xxx 退出了
-       GateWay::sendToAll(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d :i:s'))));
+       GateWay::sendToAll(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d H:i:s'))));
        
    }
    
