@@ -10,6 +10,7 @@
   <script type="text/javascript" src="/js/swfobject.js"></script>
   <script type="text/javascript" src="/js/web_socket.js"></script>
   <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/json.js"></script>
 
   <script type="text/javascript">
     if (typeof console == "undefined") {    this.console = { log: function (msg) {  } };}
@@ -25,12 +26,12 @@
     	  if(!name) {
     		  return ws.close();
    		  }
-    	  ws.send('{"type":"login","name":"'+name+'"}');
+    	  ws.send(JSON.stringify({"type":"login","name":name});
       };
       // 当有消息时根据消息类型显示不同信息
       ws.onmessage = function(e) {
     	  console.log(e.data);
-        var data = eval('(' + e.data + ')');
+        var data = JSON.parse(e.data);
         switch(data['type']){
               // 展示用户列表
               case 'user_list':
@@ -70,13 +71,13 @@
             alert('姓名输入为空，请重新输入！');  
             show_prompt();
         }
-        name = name.replace(/\"/g,'\\"');
+        //name = name.replace(/\"/g,'\\"');
     }  
 
     // 提交对话
     function onSubmit() {
       var input = document.getElementById("textarea");
-      ws.send('{"type":"say","to_uid":"all","content":"'+input.value+'"}');
+      ws.send(JSON.stringify({"type":"say","to_uid":"all","content":input.value});
       input.value = "";
       input.focus();
     }
