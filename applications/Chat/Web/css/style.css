@@ -35,6 +35,8 @@ body
 #userlist > h4
 {
     text-align:center;
+	font-size:14px;
+	font-weight:nold;
 }
 
 .words
