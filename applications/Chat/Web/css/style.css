@@ -26,6 +26,11 @@ body
 	background:#EEEEEE;
 }
 
+#userlist li
+{
+	color:#000666;
+}
+
 .words
 {
 	margin:8px;
