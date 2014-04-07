@@ -147,7 +147,7 @@
                     <textarea class="textarea thumbnail" id="textarea"></textarea>
                     <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
-               <p calss="cp">Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
+               <p class="cp">Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
 	        </div>
 	        <div class="col-md-3 column">
 	           <div class="thumbnail">
