@@ -19,7 +19,7 @@
     var ws, name, user_list={};
     function init() {
        // 创建websocket
-      ws = new WebSocket("ws://<?php echo $_SERVER['SERVER_ADDR']?>:7272/");
+    	ws = new WebSocket("ws://"+document.domain+":7272/");
       // 当socket连接打开时，输入用户名
       ws.onopen = function() {
     	  show_prompt();
