@@ -147,13 +147,13 @@
                     <textarea class="textarea thumbnail" id="textarea"></textarea>
                     <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
-               <p class="cp">Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
+               <p class="cp">PHP多进程+Websocket(HTML5/Flash)+PHP Socket实时推送技术&nbsp&nbsp&nbsp&nbsp;Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
 	        </div>
 	        <div class="col-md-3 column">
 	           <div class="thumbnail">
                    <div class="caption" id="userlist"></div>
                </div>
-               <a href="http://workerman.net:8383" target="_blank"><img style="width:202px;margin-left:18px;" src="/img/workerman-todpole.png"></a>
+               <a href="http://workerman.net:8383" target="_blank"><img style="width:252px;margin-left:18px;" src="/img/workerman-todpole.png"></a>
 	        </div>
 	    </div>
     </div>
