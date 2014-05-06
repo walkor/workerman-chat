@@ -153,6 +153,7 @@
 	           <div class="thumbnail">
                    <div class="caption" id="userlist"></div>
                </div>
+               <a href="http://workerman.net:8383" target="_blank"><img style="width:202px;margin-left:18px;" src="/img/workerman-todpole.png"></a>
 	        </div>
 	    </div>
     </div>
