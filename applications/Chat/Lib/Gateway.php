@@ -26,7 +26,7 @@ class GateWay
        $pack->header['client_ip'] = Context::$client_ip;
        $pack->header['client_port'] = Context::$client_port;
        $pack->header['uid'] = Context::$uid;
-       $pack->body = \Man\Common\Protocols\WebSocket::encode($message);
+       $pack->body = WebSocket::encode($message);
        $buffer = $pack->getBuffer();
        $all_addresses = Store::get('GLOBAL_GATEWAY_ADDRESS');
        foreach($all_addresses as $address)
@@ -121,7 +121,7 @@ class GateWay
        $pack->header['client_ip'] = Context::$client_ip;
        $pack->header['client_port'] = Context::$client_port;
        $pack->header['uid'] = empty($uid) ? 0 : $uid;
-       $pack->body = $raw_data ? $message : \Man\Common\Protocols\WebSocket::encode($message);
+       $pack->body = $raw_data ? $message : WebSocket::encode($message);
         
        return self::sendToGateway("udp://{$pack->header['local_ip']}:{$pack->header['local_port']}", $pack->getBuffer());
    }
@@ -149,7 +149,7 @@ class GateWay
            $pack->header['client_port'] = Context::$client_port;
        }
        $pack->header['uid'] = $uid ? $uid : 0;
-       $pack->body = \Man\Common\Protocols\WebSocket::encode($message);
+       $pack->body = WebSocket::encode($message);
        
        return self::sendToGateway("udp://{$pack->header['local_ip']}:{$pack->header['local_port']}", $pack->getBuffer());
    }

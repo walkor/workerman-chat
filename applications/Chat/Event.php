@@ -84,7 +84,7 @@ class Event
         {
             return ;
         }
-        $message = \App\Common\Protocols\WebSocket::decode($message);
+        $message =WebSocket::decode($message);
         echo "uid:$uid onMessage:".var_export($message,true)."\n";
         $message_data = json_decode($message, true);
         if(!$message_data)
