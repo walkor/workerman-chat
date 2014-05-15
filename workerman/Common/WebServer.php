@@ -1,6 +1,6 @@
 <?php
-require_once WORKERMAN_ROOT_DIR . 'man/Core/SocketWorker.php';
-require_once WORKERMAN_ROOT_DIR . 'applications/Common/Protocols/Http/Http.php';
+require_once WORKERMAN_ROOT_DIR . 'Core/SocketWorker.php';
+require_once WORKERMAN_ROOT_DIR . 'Common/Protocols/Http/Http.php';
 
 /**
  * 
@@ -42,6 +42,18 @@ class WebServer extends Man\Core\SocketWorker
     protected static $serverRoot = array();
     
     /**
+     * 默认访问日志目录
+     * @var string
+     */
+    protected static $defaultAccessLog = './logs/access.log';
+    
+    /**
+     * 访问日志存储路径
+     * @var array
+     */
+    protected static $accessLog = array();
+    
+    /**
      * mime类型映射关系
      * @var array
      */
@@ -55,11 +67,13 @@ class WebServer extends Man\Core\SocketWorker
     public function onStart()
     {
         // 初始化HttpCache
-        App\Common\Protocols\Http\HttpCache::init();
+        Man\Common\Protocols\Http\HttpCache::init();
         // 初始化mimeMap
         $this->initMimeTypeMap();
         // 初始化ServerRoot
         $this->initServerRoot();
+        // 初始化访问路径
+        $this->initAccessLog();
     }
     
     /**
@@ -103,6 +117,21 @@ class WebServer extends Man\Core\SocketWorker
     {
         self::$serverRoot = \Man\Core\Lib\Config::get($this->workerName.'.root');
     }
+    
+    /**
+     * 初始化AccessLog
+     * @return void 
+     */
+    public function initAccessLog()
+    {
+        // 虚拟机访问日志目录
+        self::$accessLog = \Man\Core\Lib\Config::get($this->workerName.'.access_log');
+        // 默认访问日志目录
+        if($default_access_log =  \Man\Core\Lib\Config::get($this->workerName.'.default_access_log'))
+        {
+            self::$defaultAccessLog = $default_access_log;
+        }
+    }
 
     /**
      * 确定数据是否接收完整
@@ -110,7 +139,7 @@ class WebServer extends Man\Core\SocketWorker
      */
     public function dealInput($recv_str)
     {
-        return App\Common\Protocols\Http\http_input($recv_str);
+        return Man\Common\Protocols\Http\http_input($recv_str);
     }
 
     /**
@@ -120,14 +149,17 @@ class WebServer extends Man\Core\SocketWorker
     public function dealProcess($recv_str)
     {
          // http请求处理开始。解析http协议，生成$_POST $_GET $_COOKIE
-        App\Common\Protocols\Http\http_start($recv_str);
-       
+        Man\Common\Protocols\Http\http_start($recv_str);
+        
+        // 记录访问日志
+        $this->logAccess($recv_str);
+        
         // 请求的文件
         $url_info = parse_url($_SERVER['REQUEST_URI']);
         if(!$url_info)
         {
-            App\Common\Protocols\Http\header('HTTP1.1/ 400 Bad Request');
-            return $this->sendToClient(App\Common\Protocols\Http\http_end(''));
+            Man\Common\Protocols\Http\header('HTTP1.1/ 400 Bad Request');
+            return $this->sendToClient(Man\Common\Protocols\Http\http_end('<h1>400 Bad Request</h1>'));
         }
         
         $path = $url_info['path'];
@@ -145,16 +177,29 @@ class WebServer extends Man\Core\SocketWorker
         {
                 $file_content = self::$fileCache[$path];
                 // 发送给客户端
-                return $this->sendToClient(App\Common\Protocols\Http\http_end($file_content));
+                return $this->sendToClient(Man\Common\Protocols\Http\http_end($file_content));
         }
         
         $root_dir = isset(self::$serverRoot[$_SERVER['HTTP_HOST']]) ? self::$serverRoot[$_SERVER['HTTP_HOST']] : current(self::$serverRoot);
         
         $file = "$root_dir/$path";
         
+        // 对应的php文件不存在则直接使用根目录的index.php
+        if($extension == 'php' && !is_file($file))
+        {
+            $file = "$root_dir/index.php";
+        }
+        
         // 请求的文件存在
         if(is_file($file))
         {
+            // 判断是否是站点目录里的文件
+            if((!($request_realpath = realpath($file)) || !($root_dir_realpath = realpath($root_dir))) || 0 !== strpos($request_realpath, $root_dir_realpath))
+            {
+                Man\Common\Protocols\Http\header('HTTP1.1/ 400 Bad Request');
+                return $this->sendToClient(Man\Common\Protocols\Http\http_end('<h1>400 Bad Request</h1>'));
+            }
+            
             // 如果请求的是php文件
             if($extension == 'php')
             {
@@ -183,7 +228,7 @@ class WebServer extends Man\Core\SocketWorker
                 }
                 $content = ob_get_clean();
                 ini_set('display_errors', 'on');
-                $buffer = App\Common\Protocols\Http\http_end($content);
+                $buffer = Man\Common\Protocols\Http\http_end($content);
                 $this->sendToClient($buffer);
                 // 执行php每执行一次就退出(原因是有的业务使用了require_once类似的语句，不能重复加载业务逻辑)
                 //return $this->stop();
@@ -193,11 +238,11 @@ class WebServer extends Man\Core\SocketWorker
             // 请求的是静态资源文件
             if(isset(self::$mimeTypeMap[$extension]))
             {
-                App\Common\Protocols\Http\header('Content-Type: '. self::$mimeTypeMap[$extension]);
+                Man\Common\Protocols\Http\header('Content-Type: '. self::$mimeTypeMap[$extension]);
             }
             else 
             {
-                App\Common\Protocols\Http\header('Content-Type: '. self::$defaultMimeType);
+                Man\Common\Protocols\Http\header('Content-Type: '. self::$defaultMimeType);
             }
             
             // 获取文件信息
@@ -212,9 +257,9 @@ class WebServer extends Man\Core\SocketWorker
                 if($modified_time === $_SERVER['HTTP_IF_MODIFIED_SINCE'])
                 {
                     // 304
-                    App\Common\Protocols\Http\header('HTTP/1.1 304 Not Modified');
+                    Man\Common\Protocols\Http\header('HTTP/1.1 304 Not Modified');
                     // 发送给客户端
-                    return $this->sendToClient(App\Common\Protocols\Http\http_end(''));
+                    return $this->sendToClient(Man\Common\Protocols\Http\http_end(''));
                 }
             }
             
@@ -241,17 +286,35 @@ class WebServer extends Man\Core\SocketWorker
             
             if($modified_time)
             {
-                App\Common\Protocols\Http\header("Last-Modified: $modified_time");
+                Man\Common\Protocols\Http\header("Last-Modified: $modified_time");
             }
             
             // 发送给客户端
-           return $this->sendToClient(App\Common\Protocols\Http\http_end($file_content));
+           return $this->sendToClient(Man\Common\Protocols\Http\http_end($file_content));
         }
         else 
         {
             // 404
-            App\Common\Protocols\Http\header("HTTP/1.1 404 Not Found");
-            return $this->sendToClient(App\Common\Protocols\Http\http_end('<html><head><title>页面不存在</title></head><body><h3>WorkerMan提醒你，文件不存在</h3></body></html>'));
+            Man\Common\Protocols\Http\header("HTTP/1.1 404 Not Found");
+            return $this->sendToClient(Man\Common\Protocols\Http\http_end('<html><head><title>页面不存在</title></head><body><center><h3>页面不存在</h3></center></body></html>'));
+        }
+    }
+    
+    /**
+     * 记录访问日志
+     * @param unknown_type $recv_str
+     */
+    public function logAccess($recv_str)
+    {
+        // 记录访问日志
+        $log_data = date('Y-m-d H:i:s') . "\t REMOTE:" . $this->getRemoteAddress()."\n$recv_str";
+        if(isset(self::$accessLog[$_SERVER['HTTP_HOST']]))
+        {
+            file_put_contents(self::$accessLog[$_SERVER['HTTP_HOST']], $log_data, FILE_APPEND);
+        }
+        else
+        {
+            file_put_contents(self::$defaultAccessLog, $log_data, FILE_APPEND);
         }
     }
 }

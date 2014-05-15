@@ -1,5 +1,5 @@
 <?php 
-namespace App\Common\Protocols;
+namespace Man\Common\Protocols;
 
 /**
  * WebSocket 协议解包和打包

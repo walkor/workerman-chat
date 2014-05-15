@@ -7,8 +7,9 @@
  * 
  */
 require_once WORKERMAN_ROOT_DIR . 'man/Core/SocketWorker.php';
-require_once WORKERMAN_ROOT_DIR . 'applications/Chat/Protocols/GatewayProtocol.php';
-require_once WORKERMAN_ROOT_DIR . 'applications/Chat/Event.php';
+define('ROOT_DIR', realpath(__DIR__.'/../'));
+require_once ROOT_DIR . '/Protocols/GatewayProtocol.php';
+require_once ROOT_DIR . '/Event.php';
 
 class ChatWorker extends Man\Core\SocketWorker
 {

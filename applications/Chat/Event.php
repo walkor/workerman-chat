@@ -6,9 +6,8 @@
  * @author walkor <worker-man@qq.com>
  * 
  */
-
-require_once WORKERMAN_ROOT_DIR . 'applications/Chat/Gateway.php';
-require_once WORKERMAN_ROOT_DIR . 'applications/Common/Protocols/WebSocket.php';
+require_once ROOT_DIR . '/Lib/Gateway.php';
+require_once ROOT_DIR . '/Protocols/WebSocket.php';
 
 class Event
 {
