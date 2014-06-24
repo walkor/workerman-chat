@@ -33,7 +33,13 @@ class Event
            $new_message .= "Connection: Upgrade\r\n";
            $new_message .= "Sec-WebSocket-Accept: " . $new_key . "\r\n\r\n";
            
-           // 把时间戳当成uid
+           /*
+            * 获取uid，uid必须为1-42亿内的数字
+            * 把时间戳当成uid，高并发下这里会有小概率uid冲突
+            * 一般流程应该是通过用户名 密码从数据库中获取uid
+            * 用户名密码可以放到url中作为参数传递过来，然后自行解析
+            * 例如前端js这样调用 ws = new WebSocket("ws://workerman.net:7272/?name=xxx&password=xxx");
+            */ 
            $uid = substr(strval(microtime(true)), 3, 10)*100;
            
            // 记录uid到gateway通信地址的映射
