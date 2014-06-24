@@ -49,13 +49,13 @@ class Event
            GateWay::notifyConnectionSuccess($uid);
            
            // 发送数据包到客户端 完成握手
-           return GateWay::sendToCurrentUid($new_message, true);
+           return GateWay::sendToCurrentUid($new_message);
        }
        // 如果是flash发来的policy请求
        elseif(trim($message) === '<policy-file-request/>')
        {
            $policy_xml = '<?xml version="1.0"?><cross-domain-policy><site-control permitted-cross-domain-policies="all"/><allow-access-from domain="*" to-ports="*"/></cross-domain-policy>'."\0";
-           return GateWay::sendToCurrentUid($policy_xml, true);
+           return GateWay::sendToCurrentUid($policy_xml);
        }
        
        return null;
@@ -74,7 +74,7 @@ class Event
        self::delUserFromList($uid);
 
        // 广播 xxx 退出了
-       GateWay::sendToAll(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d H:i:s'))));
+       GateWay::sendToAll(\WebSocket::encode(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d H:i:s')))));
        
    }
    
@@ -117,10 +117,10 @@ class Event
                 }
                 
                 // 发送给当前用户 内容是用户列表 message: {type:user_list, user_list:xxxx}
-                Gateway::sendToUid($uid, json_encode(array('type'=>'user_list', 'user_list'=> $all_users)));
+                Gateway::sendToUid($uid, \WebSocket::encode(json_encode(array('type'=>'user_list', 'user_list'=> $all_users))));
                 
                 // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx} 
-                Gateway::sendToAll(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>htmlspecialchars($message_data['name']), 'time'=>date('Y-m-d H:i:s'))));
+                Gateway::sendToAll(\WebSocket::encode(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>htmlspecialchars($message_data['name']), 'time'=>date('Y-m-d H:i:s')))));
                 return;
                 
             // 用户发言 message: {type:say, to_uid:xx, content:xx}
@@ -135,7 +135,7 @@ class Event
                         'content'=>nl2br(htmlspecialchars($message_data['content'])),
                         'time'=>date('Y-m-d :i:s'),
                     );
-                    return Gateway::sendToUid($message_data['to_uid'], json_encode($new_message));
+                    return Gateway::sendToUid($message_data['to_uid'], \WebSocket::encode(json_encode($new_message)));
                 }
                 // 向大家说
                 $new_message = array(
@@ -145,7 +145,7 @@ class Event
                     'content'=>nl2br(htmlspecialchars($message_data['content'])),
                     'time'=>date('Y-m-d :i:s'),
                 );
-                return Gateway::sendToAll(json_encode($new_message));
+                return Gateway::sendToAll(\WebSocket::encode(json_encode($new_message)));
                 
         }
    }
