@@ -14,7 +14,7 @@ class Store
     // 上次缓存时间
     protected static $lastCacheTime = 0;
     // 保存数据的文件相对与WORKERMAN_LOG_DIR目录目录
-    protected static $dataFile = 'data.php';
+    protected static $dataFile = 'chat-data.php';
     // 打开文件的句柄
     protected static $dataFileHandle = null;
     
