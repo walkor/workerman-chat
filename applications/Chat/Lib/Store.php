@@ -3,7 +3,7 @@
  * 
  * 这里用php数组文件来存储数据，
  * 为了获取高性能需要用类似memcache、redis的存储
- * @author walkor <worker-man@qq.com>
+ * @author walkor <workerman.net>
  * 
  */
 
@@ -14,7 +14,7 @@ class Store
     // 上次缓存时间
     protected static $lastCacheTime = 0;
     // 保存数据的文件相对与WORKERMAN_LOG_DIR目录目录
-    protected static $dataFile = 'chat-data.php';
+    protected static $dataFile = 'data.php';
     // 打开文件的句柄
     protected static $dataFileHandle = null;
     
