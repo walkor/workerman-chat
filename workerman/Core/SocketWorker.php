@@ -527,6 +527,11 @@ abstract class SocketWorker extends AbstractWorker
         // tcp
         if($this->protocol != 'udp')
         {
+            if(!empty($this->sendBuffers[$this->currentDealFd]))
+            {
+                $this->sendBuffers[$this->currentDealFd] .= $str_to_send;
+                return;
+            }
             $send_len = @fwrite($this->connections[$this->currentDealFd], $str_to_send);
             if($send_len === strlen($str_to_send))
             {
@@ -542,7 +547,7 @@ abstract class SocketWorker extends AbstractWorker
             }
             if(!isset($this->connections[$this->currentDealFd]))
             {
-                $debug_str = new \Exception('sendToClient fail $this->connections[$this->currentDealFd] is null');
+                $debug_str = new \Exception('sendToClient fail $this->connections['.var_export($this->currentDealFd, true).'] is null');
                 $this->notice((string)$debug_str);
                 return false;
             }
@@ -578,6 +583,7 @@ abstract class SocketWorker extends AbstractWorker
             {
                 return $this->closeClient($fd);
             }
+            $this->sendBuffers[$fd] = '';
             $this->event->del($this->connections[$fd], BaseEvent::EV_WRITE);
             return;
         }
