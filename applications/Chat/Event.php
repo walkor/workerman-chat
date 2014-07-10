@@ -11,8 +11,18 @@ require_once ROOT_DIR . '/Protocols/WebSocket.php';
 
 class Event
 {
+    /**
+     * 网关有消息时，判断消息是否完整
+     */
+    public static function onGatewayMessage($buffer)
+    {
+        return 0;
+    }
+    
    /**
-    * 当有用户连接时，会触发该方法
+    * 此链接的用户没调用GateWay::notifyConnectionSuccess($uid);前（即没有得到验证），都触发onConnect
+    * 已经调用GateWay::notifyConnectionSuccess($uid);的用户有消息时，则触发onMessage
+    * @param string $message 是
     */
    public static function onConnect($message)
    {
