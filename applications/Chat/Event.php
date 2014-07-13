@@ -6,6 +6,7 @@
  * @author walkor <worker-man@qq.com>
  * 
  */
+require_once ROOT_DIR . '/Protocols/WebSocket.php';
 class Event
 {
     /**
