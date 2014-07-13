@@ -16,11 +16,11 @@ class WebSocket
         $data_len = ord($buffer[1]) & 127;
         $head_len = 6;
         if ($data_len === 126) {
-            $pack = unpack('ntotal_len', substr($buffer, 3, 2));
+            $pack = unpack('ntotal_len', substr($buffer, 2, 2));
             $data_len = $pack['total_len'];
             $head_len = 8;
         } else if ($data_len === 127) {
-            $arr = unpack('N2', substr($buffer, 3, 8));
+            $arr = unpack('N2', substr($buffer, 2, 8));
             $data_len = $arr[1]*4294967296 + $arr[2];
             $head_len = 14;
         }
@@ -49,7 +49,7 @@ class WebSocket
         }
         else
         {
-            return "\x81".char(127).pack("xxxxN", $len).$buffer;
+            return "\x81".chr(127).pack("xxxxN", $len).$buffer;
         }
     }
     
