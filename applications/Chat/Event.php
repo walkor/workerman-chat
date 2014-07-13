@@ -6,9 +6,6 @@
  * @author walkor <worker-man@qq.com>
  * 
  */
-require_once ROOT_DIR . '/Lib/Gateway.php';
-require_once ROOT_DIR . '/Protocols/WebSocket.php';
-
 class Event
 {
     /**
@@ -16,7 +13,7 @@ class Event
      */
     public static function onGatewayMessage($buffer)
     {
-        return 0;
+        return WebSocket::check($buffer);
     }
     
    /**
@@ -95,10 +92,11 @@ class Event
     */
    public static function onMessage($uid, $message)
    {
-        // $message len < 7 可能是ping包，断开连接的包等暂时忽略
-        if(strlen($message) < 7)
+        if(\WebSocket::isClosePacket($message))
         {
-            return ;
+            Gateway::kickUid($uid, '');
+            self::onClose($uid);
+            return;
         }
         $message =WebSocket::decode($message);
         echo "uid:$uid onMessage:".var_export($message,true)."\n";
