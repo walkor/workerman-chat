@@ -14,6 +14,10 @@ class Event
      */
     public static function onGatewayMessage($buffer)
     {
+        if(0 === strpos($buffer, 'GET') || trim($buffer) === '<policy-file-request/>')
+        {
+            return 0;
+        }
         return WebSocket::check($buffer);
     }
     
