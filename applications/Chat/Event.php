@@ -6,7 +6,13 @@
  * @author walkor <worker-man@qq.com>
  * 
  */
-require_once ROOT_DIR . '/Protocols/WebSocket.php';
+use \Lib\Context;
+use \Lib\Gateway;
+use \Lib\StatisticClient;
+use \Lib\Store;
+use \Protocols\GatewayProtocol;
+use \Protocols\WebSocket;
+
 class Event
 {
     /**
@@ -18,12 +24,14 @@ class Event
     }
     
    /**
-    * 此链接的用户没调用GateWay::notifyConnectionSuccess($uid);前（即没有得到验证），都触发onConnect
-    * 已经调用GateWay::notifyConnectionSuccess($uid);的用户有消息时，则触发onMessage
+    * 此链接的用户没调用Gateway::notifyConnectionSuccess($uid);前（即没有得到验证），都触发onConnect
+    * 已经调用Gateway::notifyConnectionSuccess($uid);的用户有消息时，则触发onMessage
     * @param string $message 是
     */
    public static function onConnect($message)
    {
+       // debug
+       echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']} socketid:{$_SERVER['GATEWAY_SOCKET_ID']} uid:0 onConnect:".$message."\n";
        // WebSocket 握手阶段
        if(0 === strpos($message, 'GET'))
        {
@@ -51,19 +59,19 @@ class Event
            $uid = substr(strval(microtime(true)), 3, 10)*100;
            
            // 记录uid到gateway通信地址的映射
-           GateWay::storeUid($uid);
+           Gateway::storeUid($uid);
            
            // 发送数据包到address对应的gateway，确认connection成功
-           GateWay::notifyConnectionSuccess($uid);
+           Gateway::notifyConnectionSuccess($uid);
            
            // 发送数据包到客户端 完成握手
-           return GateWay::sendToCurrentUid($new_message);
+           return Gateway::sendToCurrentUid($new_message);
        }
        // 如果是flash发来的policy请求
        elseif(trim($message) === '<policy-file-request/>')
        {
            $policy_xml = '<?xml version="1.0"?><cross-domain-policy><site-control permitted-cross-domain-policies="all"/><allow-access-from domain="*" to-ports="*"/></cross-domain-policy>'."\0";
-           return GateWay::sendToCurrentUid($policy_xml);
+           return Gateway::sendToCurrentUid($policy_xml);
        }
        
        return null;
@@ -76,13 +84,16 @@ class Event
    public static function onClose($uid)
    {
        // [这步是必须的]删除这个用户的gateway通信地址
-       GateWay::deleteUidAddress($uid);
+       Gateway::deleteUidAddress($uid);
 
        // 从用户列表中删除
        self::delUserFromList($uid);
 
+       // debug
+       echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']} socketid:{$_SERVER['GATEWAY_SOCKET_ID']} uid:$uid onClose:''\n";
+       
        // 广播 xxx 退出了
-       GateWay::sendToAll(\WebSocket::encode(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d H:i:s')))));
+       Gateway::sendToAll(WebSocket::encode(json_encode(array('type'=>'logout', 'uid'=> $uid, 'time'=>date('Y-m-d H:i:s')))));
        
    }
    
@@ -93,14 +104,15 @@ class Event
     */
    public static function onMessage($uid, $message)
    {
-        if(\WebSocket::isClosePacket($message))
+        if(WebSocket::isClosePacket($message))
         {
             Gateway::kickUid($uid, '');
             self::onClose($uid);
             return;
         }
         $message =WebSocket::decode($message);
-        echo "uid:$uid onMessage:".var_export($message,true)."\n";
+        // debug
+        echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']} socketid:{$_SERVER['GATEWAY_SOCKET_ID']} uid:$uid onMessage:".$message."\n";
         $message_data = json_decode($message, true);
         if(!$message_data)
         {
@@ -126,10 +138,10 @@ class Event
                 }
                 
                 // 发送给当前用户 内容是用户列表 message: {type:user_list, user_list:xxxx}
-                Gateway::sendToUid($uid, \WebSocket::encode(json_encode(array('type'=>'user_list', 'user_list'=> $all_users))));
+                Gateway::sendToUid($uid, WebSocket::encode(json_encode(array('type'=>'user_list', 'user_list'=> $all_users))));
                 
                 // 转播给所有用户，xx进入聊天室 message {type:login, uid:xx, name:xx} 
-                Gateway::sendToAll(\WebSocket::encode(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>htmlspecialchars($message_data['name']), 'time'=>date('Y-m-d H:i:s')))));
+                Gateway::sendToAll(WebSocket::encode(json_encode(array('type'=>'login', 'uid'=>$uid, 'name'=>htmlspecialchars($message_data['name']), 'time'=>date('Y-m-d H:i:s')))));
                 return;
                 
             // 用户发言 message: {type:say, to_uid:xx, content:xx}
@@ -144,7 +156,7 @@ class Event
                         'content'=>nl2br(htmlspecialchars($message_data['content'])),
                         'time'=>date('Y-m-d :i:s'),
                     );
-                    return Gateway::sendToUid($message_data['to_uid'], \WebSocket::encode(json_encode($new_message)));
+                    return Gateway::sendToUid($message_data['to_uid'], WebSocket::encode(json_encode($new_message)));
                 }
                 // 向大家说
                 $new_message = array(
@@ -154,7 +166,7 @@ class Event
                     'content'=>nl2br(htmlspecialchars($message_data['content'])),
                     'time'=>date('Y-m-d :i:s'),
                 );
-                return Gateway::sendToAll(\WebSocket::encode(json_encode($new_message)));
+                return Gateway::sendToAll(WebSocket::encode(json_encode($new_message)));
                 
         }
    }
@@ -166,7 +178,7 @@ class Event
    public static function getUserList()
    {
        $key = 'alluserlist';
-       return Store::get($key);
+       return Store::instance('gateway')->get($key);
    }
    
    /**
@@ -180,7 +192,7 @@ class Event
        if(isset($user_list[$uid]))
        {
            unset($user_list[$uid]);
-           return Store::set($key, $user_list);
+           return Store::instance('gateway')->set($key, $user_list);
        }
        return true;
    }
@@ -197,7 +209,7 @@ class Event
        if(!isset($user_list[$uid]))
        {
            $user_list[$uid] = $name;
-           return Store::set($key, $user_list);
+           return Store::instance('gateway')->set($key, $user_list);
        }
        return true;
    }
