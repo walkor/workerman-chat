@@ -16,6 +16,13 @@ use \Protocols\WebSocket;
 class Event
 {
     /**
+     * 当网关有客户端链接上来时触发，一般这里留空
+     */
+    public static function onGatewayConnect()
+    {
+    }
+    
+    /**
      * 网关有消息时，判断消息是否完整
      */
     public static function onGatewayMessage($buffer)
