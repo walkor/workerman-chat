@@ -377,7 +377,7 @@ abstract class SocketWorker extends AbstractWorker
             if(!empty($this->recvBuffers[$fd]['buf']))
             {
                 $this->statusInfo['send_fail']++;
-                $this->notice("CLIENT_CLOSE\nCLIENT_IP:".$this->getRemoteIp()."\nBUFFER:[".var_export($this->recvBuffers[$fd]['buf'],true)."]\n");
+                $this->notice("CLIENT_CLOSE\nCLIENT_IP:".$this->getRemoteIp()."\nBUFFER:[".bin2hex($this->recvBuffers[$fd]['buf'])."]\n");
             }
             
             // 关闭链接
@@ -738,7 +738,7 @@ abstract class SocketWorker extends AbstractWorker
             return;
         }
         $error_code = 0;
-        msg_send(Master::getQueueId(), self::MSG_TYPE_STATUS, array_merge($this->statusInfo, array('memory'=>memory_get_usage(true), 'pid'=>posix_getpid(), 'worker_name' => $this->workerName)), true, false, $error_code);
+        @msg_send(Master::getQueueId(), self::MSG_TYPE_STATUS, array_merge($this->statusInfo, array('memory'=>memory_get_usage(true), 'pid'=>posix_getpid(), 'worker_name' => $this->workerName)), true, false, $error_code);
     }
     
     /**
