@@ -2,7 +2,7 @@
 /**
  * 
  * 聊天主逻辑
- * 主要是处理onGateway onMessage onClose 三个方法
+ * 主要是处理onGatewayMessage onMessage onClose 三个方法
  * @author walkor <workerman.net>
  * 
  */
