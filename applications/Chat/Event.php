@@ -41,8 +41,7 @@ class Event
        // 判断是不是websocket的关闭连接的包
         if(WebSocket::isClosePacket($message))
         {
-            Gateway::kickClient($client_id);
-            return self::onClose($client_id);
+            return Gateway::kickClient($client_id);
         }
         
         // 解码websocket，得到原始数据
