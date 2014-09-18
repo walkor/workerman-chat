@@ -95,7 +95,7 @@ function check_auth()
     _session_start();
     if(!isset($_SESSION['admin']))
     {
-        if(empty($_POST['admin_name']) || empty($_POST['admin_password']))
+        if(!isset($_POST['admin_name']) || !isset($_POST['admin_password']))
         {
             include ST_ROOT . '/Views/login.tpl.php';
             _exit();
