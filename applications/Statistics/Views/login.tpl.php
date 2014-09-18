@@ -49,10 +49,10 @@
 		<?php }?>
 			<form role="form" method="POST" action="">
 				<div class="form-group">
-					 <label>用户名</label><input type="email" class="form-control" />
+					 <label>用户名</label><input type="text" name="admin_name" class="form-control" />
 				</div>
 				<div class="form-group">
-					 <label for="exampleInputPassword1">密码</label><input type="password" class="form-control" id="exampleInputPassword1" />
+					 <label for="exampleInputPassword1">密码</label><input type="password" name="admin_password"  class="form-control" id="exampleInputPassword1" />
 				</div>
 				<button type="submit" class="btn btn-default">登录</button>
 			</form>
