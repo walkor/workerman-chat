@@ -86,6 +86,12 @@ function multiRequest($request_buffer_array)
  */
 function check_auth()
 {
+    // 如果配置中管理员用户名密码为空则说明不用验证
+    if(Statistics\Config\Config::$adminName == '' && Statistics\Config\Config::$adminPassword == '')
+    {
+        return true;
+    }
+    // 进入验证流程
     _session_start();
     if(!isset($_SESSION['admin']))
     {
@@ -107,6 +113,7 @@ function check_auth()
             $_SESSION['admin'] = $admin_name;
         }
     }
+    return true;
 }
 
 /**
