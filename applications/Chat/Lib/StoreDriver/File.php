@@ -122,6 +122,14 @@ class File
     }
     
     /**
+     * 清零销毁存储数据
+     */
+    public function destroy()
+    {
+        @unlink($this->dataFile);
+    }
+    
+    /**
      * 写入磁盘
      * @return number
      */

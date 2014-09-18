@@ -80,3 +80,56 @@ function multiRequest($request_buffer_array)
 
     return $read_buffer;
 }
+
+/**
+ * 检查是否登录
+ */
+function check_auth()
+{
+    _session_start();
+    if(!isset($_SESSION['admin']))
+    {
+        if(empty($_POST['admin_name']) || empty($_POST['admin_password']))
+        {
+            include ST_ROOT . '/Views/login.tpl.php';
+            _exit();
+        }
+        else 
+        {
+            $admin_name = $_POST['admin_name'];
+            $admin_password = $_POST['admin_password'];
+            if($admin_name != Statistics\Config\Config::$adminName || $admin_password != Statistics\Config\Config::$adminPassword)
+            {
+                $msg = "用户名或者密码不正确";
+                include ST_ROOT . '/Views/login.tpl.php';
+                _exit();
+            }
+            $_SESSION['admin'] = $admin_name;
+        }
+    }
+}
+
+/**
+ * 启动session，兼容fpm
+ */
+function _session_start()
+{
+    if(defined('WORKERMAN_ROOT_DIR'))
+    {
+        return \Man\Common\Protocols\Http\session_start();
+    }
+    return session_start();
+}
+
+/**
+ * 退出
+ * @param string $str
+ */
+function _exit($str = '')
+{
+    if(defined('WORKERMAN_ROOT_DIR'))
+    {
+        return \Man\Common\Protocols\Http\jump_exit($str);
+    }
+    return exit($str);
+}
