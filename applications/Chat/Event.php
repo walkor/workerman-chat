@@ -3,7 +3,7 @@
  * 
  * 聊天主逻辑
  * 主要是处理onGatewayMessage onMessage onClose 三个方法
- * @author walkor <walkor@workerman.net>
+ * @author walkor < walkor@workerman.net >
  * 
  */
 use \Lib\Context;
