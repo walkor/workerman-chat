@@ -1,7 +1,7 @@
 <?php 
 /**
  * 
-* @author walkor < walkor@workerman.net >
+* @author walkor <walkor@workerman.net>
  */
 class StatisticWorker extends Man\Core\SocketWorker
 {
@@ -167,7 +167,7 @@ class StatisticWorker extends Man\Core\SocketWorker
                // 依次写入磁盘
                foreach($items as $interface=>$data)
                {
-                   file_put_contents($file_dir. "/{$interface}|".date('Y-m-d'), "$ip\t$time\t{$data['suc_count']}\t{$data['suc_cost_time']}\t{$data['fail_count']}\t{$data['fail_cost_time']}\t".json_encode($data['code'])."\n", FILE_APPEND | LOCK_EX);
+                   file_put_contents($file_dir. "/{$interface}.".date('Y-m-d'), "$ip\t$time\t{$data['suc_count']}\t{$data['suc_cost_time']}\t{$data['fail_count']}\t{$data['fail_cost_time']}\t".json_encode($data['code'])."\n", FILE_APPEND | LOCK_EX);
                }
            }
        }

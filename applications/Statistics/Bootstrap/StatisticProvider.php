@@ -1,7 +1,7 @@
 <?php 
 /**
  * 
-* @author walkor < walkor@workerman.net >
+* @author walkor <walkor@workerman.net>
  */
 class StatisticProvider extends Man\Core\SocketWorker
 {
@@ -166,7 +166,7 @@ class StatisticProvider extends Man\Core\SocketWorker
                     {
                         continue;
                     }
-                    list($interface, $date) = explode("|", basename($file));
+                    list($interface, $date) = explode(".", basename($file));
                     $all_interface[$interface] = $interface;
                 }
                 $modules_name_array[$module] = $all_interface;
@@ -189,7 +189,7 @@ class StatisticProvider extends Man\Core\SocketWorker
             return '';
         }
         // log文件
-        $log_file = WORKERMAN_LOG_DIR . $this->statisticDir."{$module}/{$interface}|{$date}";
+        $log_file = WORKERMAN_LOG_DIR . $this->statisticDir."{$module}/{$interface}.{$date}";
         
         $handle = @fopen($log_file, 'r');
         if(!$handle)
