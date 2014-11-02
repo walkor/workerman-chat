@@ -5,7 +5,7 @@ namespace Lib\StoreDriver;
  * 
  * 这里用php数组文件来存储数据，
  * 为了获取高性能需要用类似memcache的存储
- * @author walkor < walkor@workerman.net >
+ * @author walkor <walkor@workerman.net>
  * 
  */
 
@@ -45,10 +45,10 @@ class File
         {
             touch($this->dataFile);
         }
-        $this->dataFileHandle = fopen($this->dataFile, 'r+');
+        $this->dataFileHandle = fopen(__FILE__, 'r');
         if(!$this->dataFileHandle)
         {
-            throw new \Exception("can not fopen($this->dataFile, 'r+')");
+            throw new \Exception("can not fopen($this->dataFile, 'r')");
         }
     }
     
