@@ -227,15 +227,19 @@ abstract class SocketWorker extends AbstractWorker
         // 触发该worker进程onStart事件，该进程整个生命周期只触发一次
         $this->onStart();
 
-        if($this->protocol == 'udp')
+        // 监听事件
+        if($this->mainSocket)
         {
-            // 添加读udp事件
-            $this->event->add($this->mainSocket,  Events\BaseEvent::EV_READ, array($this, 'recvUdp'));
-        }
-        else
-        {
-            // 添加accept事件
-            $ret = $this->event->add($this->mainSocket,  Events\BaseEvent::EV_READ, array($this, 'accept'));
+            if($this->protocol == 'udp')
+            {
+                // 添加读udp事件
+                $this->event->add($this->mainSocket,  Events\BaseEvent::EV_READ, array($this, 'recvUdp'));
+            }
+            else
+            {
+                // 添加accept事件
+                $ret = $this->event->add($this->mainSocket,  Events\BaseEvent::EV_READ, array($this, 'accept'));
+            }
         }
         
         // 主体循环,整个子进程会阻塞在这个函数上
@@ -257,8 +261,11 @@ abstract class SocketWorker extends AbstractWorker
         if($this->workerStatus != self::STATUS_SHUTDOWN)
         {
             // 停止接收连接
-            $this->event->del($this->mainSocket, Events\BaseEvent::EV_READ);
-            fclose($this->mainSocket);
+            if($this->mainSocket)
+            {
+                $this->event->del($this->mainSocket, Events\BaseEvent::EV_READ);
+                fclose($this->mainSocket);
+            }
             $this->workerStatus = self::STATUS_SHUTDOWN;
         }
         
@@ -710,9 +717,13 @@ abstract class SocketWorker extends AbstractWorker
      */
     public function getLocalIp()
     {
+        if(!$this->mainSocket && !isset($this->connections[$this->currentDealFd]))
+        {
+            return '';
+        }
         $ip = '';
         $sock_name = '';
-        if($this->protocol == 'udp' || !isset($this->connections[$this->currentDealFd]))
+        if($this->protocol === 'udp' || !isset($this->connections[$this->currentDealFd]))
         {
             $sock_name = stream_socket_get_name($this->mainSocket, false);
         }
