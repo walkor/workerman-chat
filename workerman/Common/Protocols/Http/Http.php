@@ -13,11 +13,11 @@ function http_input($http_string)
     
     if(!strpos($http_string, "\r\n\r\n"))
     {
-        return 1;
+        return 65535;
     }
     
     // POST请求还要读包体
-    if(strpos($http_string, "POST"))
+    if(0 === strpos($http_string, "POST"))
     {
         // 找Content-Length
         $match = array();
@@ -45,7 +45,7 @@ function http_input($http_string)
 function http_start($http_string, $SERVER = array())
 {
     // 初始化
-    $_POST = $_GET = $_COOKIE = $_REQUEST = $_SESSION =  array();
+    $_POST = $_GET = $_COOKIE = $_REQUEST = $_SESSION = $_FILES =  array();
     $GLOBALS['HTTP_RAW_POST_DATA'] = '';
     // 清空上次的数据
     HttpCache::$header = array();
@@ -167,7 +167,7 @@ function http_start($http_string, $SERVER = array())
         {
             parse_str($http_body, $_POST);
             // $GLOBALS['HTTP_RAW_POST_DATA']
-            $GLOBALS['HTTP_RAW_POST_DATA'] = $tmp[1];
+            $GLOBALS['HTTP_RAW_POST_DATA'] = $http_body;
         }
     }
     
@@ -435,6 +435,7 @@ function jump_exit($msg = '')
  */
 function parse_upload_files($http_body, $http_post_boundary)
 {
+    $http_body = substr($http_body, 0, strlen($http_body) - (strlen($http_post_boundary) + 4));
     $boundary_data_array = explode($http_post_boundary."\r\n", $http_body);
     if($boundary_data_array[0] === '')
     {
