@@ -12,7 +12,7 @@ $gateway->count = 4;
 
 $gateway->lanIp = '127.0.0.1';
 
-$gateway->startPort = 1000;
+$gateway->startPort = 3000;
 
 $gateway->pingInterval = 10;
 
