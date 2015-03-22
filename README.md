@@ -8,8 +8,4 @@
  * 业务逻辑全部在一个文件中，快速入门可以参考这个文件[Applications/Chat/Event.php](https://github.com/walkor/workerman-chat/blob/master/Applications/Chat/Event.php)   
 
 
- 非浏览器类的即时IM可以参考[workerman](https://github.com/walkor/workerman) 中的 [Applications/Demo](https://github.com/walkor/workerman/blob/master/Applications/Demo)  
- 同样快速入门可直接看[Applications/Demo/Event.php](https://github.com/walkor/workerman/blob/master/Applications/Demo/Event.php) 文件
-
-
  [更多请访问www.workerman.net](http://www.workerman.net/workerman-chat)
