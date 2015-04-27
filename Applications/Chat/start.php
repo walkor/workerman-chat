@@ -47,7 +47,7 @@ $gateway->onConnect = function($connection)
 // bussinessWorker 进程
 $worker = new BusinessWorker();
 // worker名称
-$worker->name = 'TodpoleBusinessWorker';
+$worker->name = 'ChatBusinessWorker';
 // bussinessWorker进程数量
 $worker->count = 4;
 
