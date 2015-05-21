@@ -17,10 +17,10 @@ GatewayWorker框架文档：http://gatewayworker-doc.workerman.net/
 启动停止(Linux系统)
 =====
 以debug方式启动  
-php start.php start  
+```php start.php start  ```
 
-以daemon方式启动
-php start.php start -d
+以daemon方式启动  
+```php start.php start -d ```
 
 启动(windows系统)
 ======
