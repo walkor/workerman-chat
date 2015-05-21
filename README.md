@@ -29,7 +29,7 @@ GatewayWorker框架文档：http://gatewayworker-doc.workerman.net/
 
 步骤：  
 1、删除Workerman目录包括文件  
-2、下载windows版本workerman，地址 https://github.com/walkor/workerman-for-win/archive/master.zip  
+2、下载或者clone windows版本workerman，zip地址 https://github.com/walkor/workerman-for-win/archive/master.zip  
 3、解压到原Worekrman目录所在位置，同时目录workerman-for-win-master重命名为Workerman(注意第一个字母W为大写)  
 4、双击start_for_win.bat启动（系统已经装好php，并设置好环境变量，要求版本php>=5.3.3）  
 
