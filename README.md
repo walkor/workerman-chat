@@ -24,13 +24,13 @@ php start.php start -d
 
 启动(windows系统)
 ======
-（windows系统仅作为开发测试环境）
+（windows系统仅作为开发测试环境）  
 首先windows系统需要先下载windows版本workerman，替换Workerman目录。
 
 步骤：
 1、删除Workerman目录包括文件  
 2、下载windows版本workerman，地址 https://github.com/walkor/workerman-for-win/archive/master.zip  
-3、解压到原Worekrman目录所在位置，同时目录workerman-for-win-master重命名为Workerman(注意第一个字母W为大写)
-4、双击start_for_win.bat启动（系统已经装好php，并设置好环境变量，要求版本php>=5.3.3）
+3、解压到原Worekrman目录所在位置，同时目录workerman-for-win-master重命名为Workerman(注意第一个字母W为大写)  
+4、双击start_for_win.bat启动（系统已经装好php，并设置好环境变量，要求版本php>=5.3.3）  
 
  [更多请访问www.workerman.net](http://www.workerman.net/workerman-chat)
