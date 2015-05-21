@@ -33,6 +33,8 @@ GatewayWorker框架文档：http://gatewayworker-doc.workerman.net/
 3、解压到原Worekrman目录所在位置，同时目录workerman-for-win-master重命名为Workerman(注意第一个字母W为大写)  
 4、双击start_for_win.bat启动（系统已经装好php，并设置好环境变量，要求版本php>=5.3.3）  
 
-（如果无法打开页面请尝试关闭服务器防火墙）
+注意：  
+windows系统下无法使用 stop reload status 等命令  
+如果无法打开页面请尝试关闭服务器防火墙  
 
  [更多请访问www.workerman.net](http://www.workerman.net/workerman-chat)
