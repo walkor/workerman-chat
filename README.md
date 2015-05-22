@@ -37,4 +37,8 @@ GatewayWorker框架文档：http://gatewayworker-doc.workerman.net/
 windows系统下无法使用 stop reload status 等命令  
 如果无法打开页面请尝试关闭服务器防火墙  
 
+测试
+=======
+浏览器访问 http://服务器ip或域:55151,例如http://127.0.0.1:55151
+
  [更多请访问www.workerman.net](http://www.workerman.net/workerman-chat)
