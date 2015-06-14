@@ -13,8 +13,6 @@
  */
 namespace Workerman\Connection;
 
-use Workerman\Events\Libevent;
-use Workerman\Events\Select;
 use Workerman\Events\EventInterface;
 use Workerman\Worker;
 use \Exception;
@@ -214,6 +212,17 @@ class TcpConnection extends ConnectionInterface
      */
     public function send($send_buffer, $raw = false)
     {
+        // 如果没有设置以原始数据发送，并且有设置协议则按照协议编码
+        if(false === $raw && $this->protocol)
+        {
+            $parser = $this->protocol;
+            $send_buffer = $parser::encode($send_buffer, $this);
+            if($send_buffer === '')
+            {
+                return null;
+            }
+        }
+        
         // 如果当前状态是连接中，则把数据放入发送缓冲区
         if($this->_status === self::STATUS_CONNECTING)
         {
@@ -226,12 +235,6 @@ class TcpConnection extends ConnectionInterface
             return false;
         }
         
-        // 如果没有设置以原始数据发送，并且有设置协议则按照协议编码
-        if(false === $raw && $this->protocol)
-        {
-            $parser = $this->protocol;
-            $send_buffer = $parser::encode($send_buffer, $this);
-        }
         // 如果发送缓冲区为空，尝试直接发送
         if($this->_sendBuffer === '')
         {
