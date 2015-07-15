@@ -386,7 +386,7 @@ class Gateway extends Worker
             Timer::add($timer_interval, array($this, 'ping'));
         }
     
-        if(class_exists('\Protocols\GatewayProtocol/'))
+        if(!class_exists('\Protocols\GatewayProtocol'))
         {
             class_alias('\GatewayWorker\Protocols\GatewayProtocol', 'Protocols\GatewayProtocol');
         }
