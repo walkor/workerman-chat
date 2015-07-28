@@ -2,7 +2,7 @@ workerman-chat
 =======
 基于workerman的GatewayWorker框架开发的一款高性能支持分布式部署的聊天室系统。
 
-GatewayWorker框架文档：http://gatewayworker-doc.workerman.net/
+GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
  特性
 ======
