@@ -349,3 +349,7 @@ class Gateway
    }
  
 }
+if(!class_exists('\Protocols\GatewayProtocol'))
+{
+    class_alias('\GatewayWorker\Protocols\GatewayProtocol', 'Protocols\GatewayProtocol');
+}
