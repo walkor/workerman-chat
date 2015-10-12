@@ -32,7 +32,7 @@ class Worker
      * 版本号
      * @var string
      */
-    const VERSION = '3.1.8';
+    const VERSION = '3.2.0';
     
     /**
      * 状态 启动中
@@ -486,7 +486,8 @@ class Worker
         {
             if($command === 'start')
             {
-                self::log("Workerman[$start_file] is running");
+                self::log("Workerman[$start_file] already running");
+                exit;
             }
         }
         elseif($command !== 'start' && $command !== 'restart')
@@ -803,7 +804,7 @@ class Worker
         {
             if(!posix_setgid($user_info['gid']) || !posix_setuid($user_info['uid']))
             {
-                self::log( 'Notice : Can not run woker as '.$user_name." , You shuld be root\n", true);
+                self::log( 'Notice : Can not run woker as '.$user_name." , You should be root\n", true);
             }
         }
     }
@@ -1131,7 +1132,7 @@ class Worker
     protected static function log($msg)
     {
         $msg = $msg."\n";
-        if(self::$_status === self::STATUS_STARTING || !self::$daemonize)
+        if(!self::$daemonize)
         {
             echo $msg;
         }
@@ -1165,6 +1166,9 @@ class Worker
             }
             $this->_context = stream_context_create($context_option);
         }
+        
+        // 设置一个空的onMessage，当onMessage未设置时用来消费socket数据
+        $this->onMessage = function(){};
     }
     
     /**
@@ -1250,6 +1254,9 @@ class Worker
      */
     public function run()
     {
+        //更新 Worker 状态
+        self::$_status = self::STATUS_RUNNING;
+        
         // 注册进程退出回调，用来检查是否有错误
         register_shutdown_function(array("\\Workerman\\Worker", 'checkErrors'));
         
