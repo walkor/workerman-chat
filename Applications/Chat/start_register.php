@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * This file is part of workerman.
  *
@@ -11,16 +11,17 @@
  * @link http://www.workerman.net/
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace GatewayWorker\Lib\StoreDriver;
+use \Workerman\Worker;
+use \GatewayWorker\Register;
 
-/**
- * Redis
- */
+// 自动加载类
+require_once __DIR__ . '/../../Workerman/Autoloader.php';
 
-class Redis extends \Redis
+$register = new Register('text://0.0.0.0:1236');
+
+// 如果不是在根目录启动，则运行runAll方法
+if(!defined('GLOBAL_START'))
 {
-    public function increment($key)
-    {
-        return parent::incr($key);
-    }
+    Worker::runAll();
 }
+

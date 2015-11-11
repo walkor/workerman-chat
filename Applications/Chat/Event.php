@@ -47,7 +47,6 @@ class Event
                 return;
             // 客户端登录 message格式: {type:login, name:xx, room_id:1} ，添加到客户端，广播给所有客户端xx进入聊天室
             case 'login':
-            case 're_login':
                 // 判断是否有房间号
                 if(!isset($message_data['room_id']))
                 {
@@ -59,17 +58,23 @@ class Event
                 $client_name = htmlspecialchars($message_data['client_name']);
                 $_SESSION['room_id'] = $room_id;
                 $_SESSION['client_name'] = $client_name;
-                
-                // 存储到当前房间的客户端列表
-                $all_clients = self::addClientToRoom($room_id, $client_id, $client_name);
-                
-                // 整理客户端列表以便显示
-                $client_list = self::formatClientsData($all_clients);
+              
+                // 获取房间内所有用户列表 
+                $clients_list = Gateway::getClientInfoByGroup($room_id);
+                foreach($clients_list as $tmp_client_id=>$item)
+                {
+                    $clients_list[$tmp_client_id] = $item['client_name'];
+                }
+                $clients_list[$client_id] = $client_name;
                 
                 // 转播给当前房间的所有客户端，xx进入聊天室 message {type:login, client_id:xx, name:xx} 
-                $new_message = array('type'=>$message_data['type'], 'client_id'=>$client_id, 'client_name'=>htmlspecialchars($client_name), 'client_list'=>$client_list, 'time'=>date('Y-m-d H:i:s'));
-                $client_id_array = array_keys($all_clients);
-                Gateway::sendToAll(json_encode($new_message), $client_id_array);
+                $new_message = array('type'=>$message_data['type'], 'client_id'=>$client_id, 'client_name'=>htmlspecialchars($client_name), 'time'=>date('Y-m-d H:i:s'));
+                Gateway::sendToGroup($room_id, json_encode($new_message));
+                Gateway::joinGroup($client_id, $room_id);
+               
+                // 给当前用户发送用户列表 
+                $new_message['client_list'] = $clients_list;
+                Gateway::sendToCurrentClient(json_encode($new_message));
                 return;
                 
             // 客户端发言 message: {type:say, to_client_id:xx, content:xx}
@@ -98,9 +103,6 @@ class Event
                     return Gateway::sendToCurrentClient(json_encode($new_message));
                 }
                 
-                // 向大家说
-                $all_clients = self::getClientListFromRoom($_SESSION['room_id']);
-                $client_id_array = array_keys($all_clients);
                 $new_message = array(
                     'type'=>'say', 
                     'from_client_id'=>$client_id,
@@ -109,7 +111,7 @@ class Event
                     'content'=>nl2br(htmlspecialchars($message_data['content'])),
                     'time'=>date('Y-m-d H:i:s'),
                 );
-                return Gateway::sendToAll(json_encode($new_message), $client_id_array);
+                return Gateway::sendToGroup($room_id ,json_encode($new_message));
         }
    }
    
@@ -126,207 +128,9 @@ class Event
        if(isset($_SESSION['room_id']))
        {
            $room_id = $_SESSION['room_id'];
-           self::delClientFromRoom($room_id, $client_id);
-           // 广播 xxx 退出了
-           if($all_clients = self::getClientListFromRoom($room_id))
-           {
-               $client_list = self::formatClientsData($all_clients);
-               $new_message = array('type'=>'logout', 'from_client_id'=>$client_id, 'from_client_name'=>$_SESSION['client_name'], 'client_list'=>$client_list, 'time'=>date('Y-m-d H:i:s'));
-               $client_id_array = array_keys($all_clients);
-               Gateway::sendToAll(json_encode($new_message), $client_id_array);
-           }
+           $new_message = array('type'=>'logout', 'from_client_id'=>$client_id, 'from_client_name'=>$_SESSION['client_name'], 'time'=>date('Y-m-d H:i:s'));
+           Gateway::sendToGroup($room_id, json_encode($new_message));
        }
    }
-   
   
-   /**
-    * 格式化客户端列表数据
-    * @param array $all_clients
-    */
-   public static function formatClientsData($all_clients)
-   {
-       $client_list = array();
-       if($all_clients)
-       {
-           foreach($all_clients as $tmp_client_id=>$tmp_name)
-           {
-               $client_list[] = array('client_id'=>$tmp_client_id, 'client_name'=>$tmp_name);
-           }
-       }
-       return $client_list;
-   }
-   
-   /**
-    * 获得客户端列表
-    * @todo 保存有限个
-    */
-   public static function getClientListFromRoom($room_id)
-   {
-       $key = "ROOM_CLIENT_LIST-$room_id";
-       $store = Store::instance('room');
-       $ret = $store->get($key);
-       if(false === $ret)
-       {
-           if(get_class($store) == 'Memcached')
-           {
-               if($store->getResultCode() == \Memcached::RES_NOTFOUND)
-               {
-                   return array();
-               }
-               else 
-               {
-                   throw new \Exception("getClientListFromRoom($room_id)->Store::instance('room')->get($key) fail " . $store->getResultMessage());
-               }
-           }
-           return array();
-       }
-       return $ret;
-   }
-   
-   /**
-    * 从客户端列表中删除一个客户端
-    * @param int $client_id
-    */
-   public static function delClientFromRoom($room_id, $client_id)
-   {
-       $key = "ROOM_CLIENT_LIST-$room_id";
-       $store = Store::instance('room');
-       // 存储驱动是memcached
-       if(get_class($store) == 'Memcached')
-       {
-           $cas = 0;
-           $try_count = 3;
-           while($try_count--)
-           {
-               $client_list = $store->get($key, null, $cas);
-               if(false === $client_list)
-               {
-                   if($store->getResultCode() == \Memcached::RES_NOTFOUND)
-                   {
-                       return array();
-                   }
-                   else
-                   {
-                        throw new \Exception("Memcached->get($key) return false and memcache errcode:" .$store->getResultCode(). " errmsg:" . $store->getResultMessage());
-                   }
-               }
-               if(isset($client_list[$client_id]))
-               {
-                   unset($client_list[$client_id]);
-                   if($store->cas($cas, $key, $client_list))
-                   {
-                       return $client_list;
-                   }
-               }
-               else 
-               {
-                   return true;
-               }
-           }
-           throw new \Exception("delClientFromRoom($room_id, $client_id)->Store::instance('room')->cas($cas, $key, \$client_list) fail" . $store->getResultMessage());
-       }
-       // 存储驱动是memcache或者file
-       else
-       {
-           $handler = fopen(__FILE__, 'r');
-           flock($handler,  LOCK_EX);
-           $client_list = $store->get($key);
-           if(isset($client_list[$client_id]))
-           {
-               unset($client_list[$client_id]);
-               $ret = $store->set($key, $client_list);
-               flock($handler, LOCK_UN);
-               return $client_list;
-           }
-           flock($handler, LOCK_UN);
-       }
-       return $client_list;
-   }
-   
-   /**
-    * 添加到客户端列表中
-    * @param int $client_id
-    * @param string $client_name
-    */
-   public static function addClientToRoom($room_id, $client_id, $client_name)
-   {
-       $key = "ROOM_CLIENT_LIST-$room_id";
-       $store = Store::instance('room');
-       // 获取所有所有房间的实际在线客户端列表，以便将存储中不在线用户删除
-       $all_online_client_id = Gateway::getOnlineStatus();
-       // 存储驱动是memcached
-       if(get_class($store) == 'Memcached')
-       {
-           $cas = 0;
-           $try_count = 3;
-           while($try_count--)
-           {
-               $client_list = $store->get($key, null, $cas);
-               if(false === $client_list)
-               {
-                   if($store->getResultCode() == \Memcached::RES_NOTFOUND)
-                   {
-                       $client_list = array();
-                   }
-                   else
-                   {
-                       throw new \Exception("Memcached->get($key) return false and memcache errcode:" .$store->getResultCode(). " errmsg:" . $store->getResultMessage());
-                   }
-               }
-               if(!isset($client_list[$client_id]))
-               {
-                   // 将存储中不在线用户删除
-                   if($all_online_client_id && $client_list)
-                   {
-                       $all_online_client_id = array_flip($all_online_client_id);
-                       $client_list = array_intersect_key($client_list, $all_online_client_id);
-                   }
-                   // 添加在线客户端
-                   $client_list[$client_id] = $client_name;
-                   // 原子添加
-                   if($store->getResultCode() == \Memcached::RES_NOTFOUND)
-                   {
-                       $store->add($key, $client_list);
-                   }
-                   // 置换
-                   else
-                   {
-                       $store->cas($cas, $key, $client_list);
-                   }
-                   if($store->getResultCode() == \Memcached::RES_SUCCESS)
-                   {
-                       return $client_list;
-                   }
-               }
-               else 
-               {
-                   return $client_list;
-               }
-           }
-           throw new \Exception("addClientToRoom($room_id, $client_id, $client_name)->cas($cas, $key, \$client_list) fail .".$store->getResultMessage());
-       }
-       // 存储驱动是memcache或者file
-       else
-       {
-           $handler = fopen(__FILE__, 'r');
-           flock($handler,  LOCK_EX);
-           $client_list = $store->get($key);
-           if(!isset($client_list[$client_id]))
-           {
-               // 将存储中不在线用户删除
-               if($all_online_client_id && $client_list)
-               {
-                   $all_online_client_id = array_flip($all_online_client_id);
-                   $client_list = array_intersect_key($client_list, $all_online_client_id);
-               }
-               // 添加在线客户端
-               $client_list[$client_id] = $client_name;
-               $ret = $store->set($key, $client_list);
-               flock($handler, LOCK_UN);
-               return $client_list;
-           }
-           flock($handler, LOCK_UN);
-       }
-       return $client_list;
-   }
 }
