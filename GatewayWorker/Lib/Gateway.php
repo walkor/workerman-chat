@@ -137,7 +137,7 @@ class Gateway
                    foreach($data as $connection_id=>$session_buffer)
                    {
                        $client_id = Context::addressToClientId($local_ip, $local_port, $connection_id);
-                       if($client_id === Context::client_id)
+                       if($client_id === Context::$client_id)
                        {
                            $status_data[$client_id] = (array)$_SESSION;
                        }
