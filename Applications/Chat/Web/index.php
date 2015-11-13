@@ -42,7 +42,7 @@
             show_prompt();
         }
         // 登录
-        var login_data = '{"type":"login","client_name":"'+name+'","room_id":"<?php echo isset($_GET['room_id']) ? $_GET['room_id'] : 1?>"}';
+        var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":"<?php echo isset($_GET['room_id']) ? $_GET['room_id'] : 1?>"}';
         console.log("websocket握手成功，发送登录数据:"+login_data);
         ws.send(login_data);
     }
@@ -100,7 +100,7 @@
       var input = document.getElementById("textarea");
       var to_client_id = $("#client_list option:selected").attr("value");
       var to_client_name = $("#client_list option:selected").text();
-      ws.send('{"type":"say","to_client_id":"'+to_client_id+'","to_client_name":"'+to_client_name+'","content":"'+input.value+'"}');
+      ws.send('{"type":"say","to_client_id":"'+to_client_id+'","to_client_name":"'+to_client_name+'","content":"'+input.value.replace(/"/g, '\\"').replace(/\n/g,'\\n').replace(/\r/g, '\\r')+'"}');
       input.value = "";
       input.focus();
     }
