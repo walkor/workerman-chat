@@ -1032,6 +1032,15 @@ class Worker
      */
     protected static function exitAndClearAll()
     {
+        foreach(self::$_workers as $worker)
+        {
+            $socket_name = $worker->getSocketName();
+            if($worker->transport === 'unix' && $socket_name)
+            {
+                list(, $address) = explode(':', $socket_name, 2);
+                @unlink($address);
+            }
+        }
         @unlink(self::$pidFile);
         self::log("Workerman[".basename(self::$_startFile)."] has been stopped");
         exit(0);
@@ -1355,6 +1364,7 @@ class Worker
         if($this->transport === 'unix')
         {
             umask(0);
+            list($scheme, $address) = explode(':', $this->_socketName, 2);
             if(!is_file($address))
             {
                 register_shutdown_function(function()use($address){@unlink($address);});
@@ -1520,6 +1530,7 @@ class Worker
         }
         // 模拟一个连接对象
         $connection = new UdpConnection($socket, $remote_address);
+        $connection->protocol = $this->protocol;
         if($this->onMessage)
         {
             if($this->protocol)
