@@ -36,7 +36,7 @@ class Gateway extends Worker
      * 版本
      * @var string
      */
-    const VERSION = '2.0.1';
+    const VERSION = '2.0.2';
     
     /**
      * 本机ip
@@ -241,11 +241,7 @@ class Gateway extends Worker
             call_user_func($this->_onConnect, $connection);
         }
         
-        // 如果设置了Event::onConnect，则通知worker进程，让worker执行onConnect
-        if(method_exists('Event','onConnect'))
-        {
-            $this->sendToWorker(GatewayProtocol::CMD_ON_CONNECTION, $connection);
-        }
+        $this->sendToWorker(GatewayProtocol::CMD_ON_CONNECTION, $connection);
     }
     
     /**
@@ -324,10 +320,7 @@ class Gateway extends Worker
     public function onClientClose($connection)
     {
         // 尝试通知worker，触发Event::onClose
-        if(method_exists('Event','onClose'))
-        {
-            $this->sendToWorker(GatewayProtocol::CMD_ON_CLOSE, $connection);
-        }
+        $this->sendToWorker(GatewayProtocol::CMD_ON_CLOSE, $connection);
         unset($this->_clientConnections[$connection->id]);
         // 清理uid数据
         if(!empty($connection->uid))
