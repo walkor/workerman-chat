@@ -97,6 +97,24 @@ class BusinessWorker extends Worker
     protected $_waitingConnectGatewayAddresses = array();
     
     /**
+     * Event onConnect回调
+     * @var callback
+     */
+    protected $_eventOnConnect = null;
+    
+    /**
+     * Event onMessage回调
+     * @var callback
+     */
+    protected $_eventOnMessage = null;
+    
+    /**
+     * Event onClose回调
+     * @var callback
+     */
+    protected $_eventOnClose = null;
+    
+    /**
      * 构造函数
      * @param string $socket_name
      * @param array $context_option
@@ -140,6 +158,25 @@ class BusinessWorker extends Worker
         
         // 业务超时信号处理
         pcntl_signal(SIGALRM, array($this, 'timeoutHandler'), false);
+        
+        if(is_callable($this->eventHandler.'::onConnect'))
+        {
+            $this->_eventOnConnect = $this->eventHandler.'::onConnect';
+        }
+        
+        if(is_callable($this->eventHandler.'::onMessage'))
+        {
+            $this->_eventOnMessage = $this->eventHandler.'::onMessage';
+        }
+        else
+        {
+            echo "Waring: {$this->eventHandler}::onMessage is not callable\n";
+        }
+        
+        if(is_callable($this->eventHandler.'::onClose'))
+        {
+            $this->_eventOnClose= $this->eventHandler.'::onClose';
+        }
     }
     
     /**
@@ -258,13 +295,22 @@ class BusinessWorker extends Worker
         switch($cmd)
         {
             case GatewayProtocol::CMD_ON_CONNECTION:
-                call_user_func($this->eventHandler.'::onConnect', Context::$client_id);
+                if($this->_eventOnConnect)
+                {
+                    call_user_func($this->_eventOnConnect, Context::$client_id);
+                }
                 break;
             case GatewayProtocol::CMD_ON_MESSAGE:
-                call_user_func($this->eventHandler.'::onMessage', Context::$client_id, $data['body']);
+                if($this->_eventOnMessage)
+                {
+                    call_user_func($this->_eventOnMessage, Context::$client_id, $data['body']);
+                }
                 break;
             case GatewayProtocol::CMD_ON_CLOSE:
-                call_user_func($this->eventHandler.'::onClose', Context::$client_id);
+                if($this->_eventOnClose)
+                {
+                    call_user_func($this->_eventOnClose, Context::$client_id);
+                }
                 break;
         }
         if($this->processTimeout)

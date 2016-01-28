@@ -24,7 +24,6 @@
  * 主要是处理 onMessage onClose 
  */
 use \GatewayWorker\Lib\Gateway;
-use \GatewayWorker\Lib\Store;
 
 class Event
 {
@@ -32,7 +31,7 @@ class Event
    /**
     * 有消息时
     * @param int $client_id
-    * @param string $message
+    * @param mixed $message
     */
    public static function onMessage($client_id, $message)
    {
