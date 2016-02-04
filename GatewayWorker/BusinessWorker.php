@@ -156,9 +156,17 @@ class BusinessWorker extends Worker
             call_user_func($this->_onWorkerStart, $this);
         }
         
-        // 业务超时信号处理
-        pcntl_signal(SIGALRM, array($this, 'timeoutHandler'), false);
+        if(function_exists('pcntl_signal'))
+        {
+            // 业务超时信号处理
+            pcntl_signal(SIGALRM, array($this, 'timeoutHandler'), false);
+        }
+        else
+        {
+            $this->processTimeout = 0;
+        }
         
+        // 设置回调
         if(is_callable($this->eventHandler.'::onConnect'))
         {
             $this->_eventOnConnect = $this->eventHandler.'::onConnect';

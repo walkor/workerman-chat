@@ -373,7 +373,7 @@ class Gateway
    /**
     * 向所有uid发送
     * @param int/string/array $uid
-    * @param unknown_type $message
+    * @param string $message
     */
    public static function sendToUid($uid, $message)
    {
