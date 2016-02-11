@@ -36,7 +36,7 @@ class Gateway extends Worker
      * 版本
      * @var string
      */
-    const VERSION = '2.0.2';
+    const VERSION = '2.0.3';
     
     /**
      * 本机ip
@@ -156,6 +156,12 @@ class Gateway extends Worker
      * @var int
      */
     protected $_gatewayPort = 0;
+    
+    /**
+     * 用于保持长连接的心跳时间间隔
+     * @var int
+     */
+    const PERSISTENCE_CONNECTION_PING_INTERVAL  = 25;
     
     /**
      * 构造函数
@@ -366,7 +372,19 @@ class Gateway extends Worker
             $timer_interval = $this->pingNotResponseLimit > 0 ? $this->pingInterval/2 : $this->pingInterval;
             Timer::add($timer_interval, array($this, 'ping'));
         }
-    
+        
+        // 如果BusinessWorker ip不是127.0.0.1，则需要加gateway到BusinessWorker的心跳
+        if($this->lanIp !== '127.0.0.1')
+        {
+            Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingBusinessWorker'));
+        }
+        
+        // 如果Register服务器不在本地服务器，则需要保持心跳
+        if(strpos($this->registerAddress, '127.0.0.1') !== 0)
+        {
+            Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingRegister'));
+        }
+        
         if(!class_exists('\Protocols\GatewayProtocol'))
         {
             class_alias('\GatewayWorker\Protocols\GatewayProtocol', 'Protocols\GatewayProtocol');
@@ -692,6 +710,31 @@ class Gateway extends Worker
                 }
                 $connection->send($ping_data);
             }
+        }
+    }
+    
+    /**
+     * 向BusinessWorker发送心跳数据，用于保持长连接
+     * @return void
+     */
+    public function pingBusinessWorker()
+    {
+        $gateway_data = GatewayProtocol::$empty;
+        $gateway_data['cmd'] = GatewayProtocol::CMD_PING;
+        foreach($this->_workerConnections as $connection)
+        {
+            $connection->send($gateway_data);
+        }
+    }
+    
+    /**
+     * 向Register发送心跳，用来保持长连接
+     */
+    public function pingRegister()
+    {
+        if($this->_registerConnection)
+        {
+            $this->_registerConnection->send('{"event":"ping"}');
         }
     }
     

@@ -115,6 +115,12 @@ class BusinessWorker extends Worker
     protected $_eventOnClose = null;
     
     /**
+     * 用于保持长连接的心跳时间间隔
+     * @var int
+     */
+    const PERSISTENCE_CONNECTION_PING_INTERVAL  = 25;
+    
+    /**
      * 构造函数
      * @param string $socket_name
      * @param array $context_option
@@ -184,6 +190,12 @@ class BusinessWorker extends Worker
         if(is_callable($this->eventHandler.'::onClose'))
         {
             $this->_eventOnClose= $this->eventHandler.'::onClose';
+        }
+        
+        // 如果Register服务器不在本地服务器，则需要保持心跳
+        if(strpos($this->registerAddress, '127.0.0.1') !== 0)
+        {
+            Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingRegister'));
         }
     }
     
@@ -267,6 +279,11 @@ class BusinessWorker extends Worker
      */
     public function onGatewayMessage($connection, $data)
     {
+        $cmd = $data['cmd'];
+        if($cmd === GatewayProtocol::CMD_PING)
+        {
+            return;
+        }
         // 上下文数据
         Context::$client_ip = $data['client_ip'];
         Context::$client_port = $data['client_port'];
@@ -293,7 +310,6 @@ class BusinessWorker extends Worker
         }
         // 备份一次$data['ext_data']，请求处理完毕后判断session是否和备份相等，不相等就更新session
         $session_str_copy = $data['ext_data'];
-        $cmd = $data['cmd'];
     
         if($this->processTimeout)
         {
@@ -453,6 +469,17 @@ class BusinessWorker extends Worker
                     Worker::stopAll();
                 }
                 break;
+        }
+    }
+    
+    /**
+     * 向Register发送心跳，用来保持长连接
+     */
+    public function pingRegister()
+    {
+        if($this->_registerConnection)
+        {
+            $this->_registerConnection->send('{"event":"ping"}');
         }
     }
 }
