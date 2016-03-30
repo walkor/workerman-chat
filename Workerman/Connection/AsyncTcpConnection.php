@@ -37,7 +37,7 @@ class AsyncTcpConnection extends TcpConnection
     
     /**
      * Construct.
-     * @param resource $socket
+     * @param string $socket
      * @param EventInterface $event
      */
     public function __construct($remote_address)
