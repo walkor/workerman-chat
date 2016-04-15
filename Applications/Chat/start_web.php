@@ -23,7 +23,7 @@ Autoloader::setRootPath(__DIR__);
 
 // WebServer
 $web = new WebServer("http://0.0.0.0:55151");
-// WebServer数量
+// WebServer进程数量
 $web->count = 2;
 // 设置站点根目录
 $web->addRoot('www.your_domain.com', __DIR__.'/Web');
