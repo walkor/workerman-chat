@@ -25,7 +25,7 @@
  */
 use \GatewayWorker\Lib\Gateway;
 
-class Event
+class Events
 {
    
    /**
