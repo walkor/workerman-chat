@@ -37,7 +37,13 @@ class Gateway
     public static $registerAddress = '127.0.0.1:1236';
 
     /**
-     * 向所有客户端(或者 client_id_array 指定的客户端)广播消息
+     * 秘钥
+     * @var string
+     */
+    public static $secretKey = '';
+    
+    /**
+     * 向所有客户端连接(或者 client_id_array 指定的客户端连接)广播消息
      *
      * @param string $message         向客户端发送的消息
      * @param array  $client_id_array 客户端 id 数组
@@ -72,7 +78,7 @@ class Gateway
     }
 
     /**
-     * 向某个客户端发消息
+     * 向某个客户端连接发消息
      *
      * @param int    $client_id
      * @param string $message
@@ -84,7 +90,7 @@ class Gateway
     }
 
     /**
-     * 向当前客户端发送消息
+     * 向当前客户端连接发送消息
      *
      * @param string $message
      * @return bool
@@ -95,7 +101,7 @@ class Gateway
     }
 
     /**
-     * 判断某个客户端是否在线
+     * 判断某个客户端连接是否在线
      *
      * @param int $client_id
      * @return int 0|1
@@ -151,7 +157,7 @@ class Gateway
     }
 
     /**
-     * 获取某个组的成员信息
+     * 获取某个组的连接信息
      *
      * @param string $group
      * @return array
@@ -160,14 +166,24 @@ class Gateway
     {
         return self::getAllClientInfo($group);
     }
+    
+    /**
+     * 获取所有连接数
+     *
+     * @return int
+     */
+    public static function getAllClientCount()
+    {
+        return self::getClientCountByGroup();
+    }
 
     /**
-     * 获取某个组的成员数目
+     * 获取某个组的在线连接数
      *
      * @param string $group
      * @return int
      */
-    public static function getClientCountByGroup($group)
+    public static function getClientCountByGroup($group = '')
     {
         $gateway_data             = GatewayProtocol::$empty;
         $gateway_data['cmd']      = GatewayProtocol::CMD_GET_CLIENT_COUNT_BY_GROUP;
@@ -210,6 +226,21 @@ class Gateway
         }
         return $client_list;
     }
+    
+    /**
+     * 生成验证包，用于验证此客户端的合法性
+     * 
+     * @return string
+     */
+    protected static function generateAuthBuffer()
+    {
+        $gateway_data         = GatewayProtocol::$empty;
+        $gateway_data['cmd']  = GatewayProtocol::CMD_GATEWAY_CLIENT_CONNECT;
+        $gateway_data['body'] = json_encode(array(
+            'secret_key' => self::$secretKey,
+        ));
+        return GatewayProtocol::encode($gateway_data);
+    }
 
     /**
      * 批量向所有 gateway 发包，并得到返回数组
@@ -221,6 +252,7 @@ class Gateway
     protected static function getBufferFromAllGateway($gateway_data)
     {
         $gateway_buffer = GatewayProtocol::encode($gateway_data);
+        $gateway_buffer = self::$secretKey ? self::generateAuthBuffer() . $gateway_buffer : $gateway_buffer;
         if (isset(self::$businessWorker)) {
             $all_addresses = self::$businessWorker->getAllGatewayAddresses();
             if (empty($all_addresses)) {
@@ -464,6 +496,7 @@ class Gateway
     protected static function sendAndRecv($address, $data)
     {
         $buffer = GatewayProtocol::encode($data);
+        $buffer = self::$secretKey ? self::generateAuthBuffer() . $buffer : $buffer;
         $client = stream_socket_client("tcp://$address", $errno, $errmsg);
         if (!$client) {
             throw new Exception("can not connect to tcp://$address $errmsg");
@@ -516,6 +549,7 @@ class Gateway
         }
         // 非workerman环境
         $gateway_buffer = GatewayProtocol::encode($gateway_data);
+        $gateway_buffer = self::$secretKey ? self::generateAuthBuffer() . $gateway_buffer : $gateway_buffer;
         $client         = stream_socket_client("tcp://$address", $errno, $errmsg);
         return strlen($gateway_buffer) == stream_socket_sendto($client, $gateway_buffer);
     }
@@ -584,9 +618,9 @@ class Gateway
         if (!$client) {
             throw new Exception('Can not connect to tcp://' . self::$registerAddress . ' ' . $errmsg);
         }
-        fwrite($client, '{"event":"worker_connect"}' . "\n");
+        fwrite($client, '{"event":"worker_connect","secret_key":"' . self::$secretKey . '"}' . "\n");
         stream_set_timeout($client, 1);
-        $ret = fread($client, 65535);
+        $ret = fgets($client, 65535);
         if (!$ret || !$data = json_decode(trim($ret), true)) {
             throw new Exception('getAllGatewayAddressesFromRegister fail. tcp://' .
                 self::$registerAddress . ' return ' . var_export($ret, true));

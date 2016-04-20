@@ -20,7 +20,6 @@ use Workerman\Lib\Timer;
 use Workerman\Connection\AsyncTcpConnection;
 use GatewayWorker\Protocols\GatewayProtocol;
 use GatewayWorker\Lib\Context;
-use GatewayWorker\Lib\Gateway;
 
 /**
  *
@@ -65,6 +64,12 @@ class BusinessWorker extends Worker
      * @var callable
      */
     public $processTimeoutHandler = '\\Workerman\\Worker::log';
+    
+    /**
+     * 秘钥
+     * @var string
+     */
+    public $secretKey = '';
 
     /**
      * 保存用户设置的 worker 启动回调
@@ -172,7 +177,8 @@ class BusinessWorker extends Worker
             class_alias('GatewayWorker\Protocols\GatewayProtocol', 'Protocols\GatewayProtocol');
         }
         $this->connectToRegister();
-        Gateway::setBusinessWorker($this);
+        \GatewayWorker\Lib\Gateway::setBusinessWorker($this);
+        \GatewayWorker\Lib\Gateway::$secretKey = $this->secretKey;
         if ($this->_onWorkerStart) {
             call_user_func($this->_onWorkerStart, $this);
         }
@@ -215,7 +221,7 @@ class BusinessWorker extends Worker
         // 防止进程立刻退出
         $worker->reloadable = false;
         // 延迟 0.01 秒退出，避免 BusinessWorker 瞬间全部退出导致没有可用的 BusinessWorker 进程
-        Timer::add(0.01, array('Workerman\Worker', 'stopAll'));
+        Timer::add(0.05, array('Workerman\Worker', 'stopAll'));
         // 执行用户定义的 onWorkerReload 回调
         if ($this->_onWorkerReload) {
             call_user_func($this->_onWorkerReload, $this);
@@ -228,7 +234,7 @@ class BusinessWorker extends Worker
     public function connectToRegister()
     {
         $this->_registerConnection = new AsyncTcpConnection("text://{$this->registerAddress}");
-        $this->_registerConnection->send('{"event":"worker_connect"}');
+        $this->_registerConnection->send('{"event":"worker_connect","secret_key":"' . $this->secretKey . '"}');
         $this->_registerConnection->onClose   = array($this, 'onRegisterConnectionClose');
         $this->_registerConnection->onMessage = array($this, 'onRegisterConnectionMessage');
         $this->_registerConnection->connect();
@@ -340,7 +346,7 @@ class BusinessWorker extends Worker
         // 判断 session 是否被更改
         $session_str_now = $_SESSION !== null ? Context::sessionEncode($_SESSION) : '';
         if ($session_str_copy != $session_str_now) {
-            Gateway::updateSocketSession(Context::$client_id, $session_str_now);
+            \GatewayWorker\Lib\Gateway::updateSocketSession(Context::$client_id, $session_str_now);
         }
 
         Context::clear();
@@ -379,8 +385,12 @@ class BusinessWorker extends Worker
             if (TcpConnection::$defaultMaxSendBufferSize == $gateway_connection->maxSendBufferSize) {
                 $gateway_connection->maxSendBufferSize = 50 * 1024 * 1024;
             }
-            $gateway_data        = GatewayProtocol::$empty;
-            $gateway_data['cmd'] = GatewayProtocol::CMD_WORKER_CONNECT;
+            $gateway_data         = GatewayProtocol::$empty;
+            $gateway_data['cmd']  = GatewayProtocol::CMD_WORKER_CONNECT;
+            $gateway_data['body'] = json_encode(array(
+                'worker_key' =>"{$this->name}:{$this->id}", 
+                'secret_key' => $this->secretKey,
+            ));
             $gateway_connection->send($gateway_data);
             $gateway_connection->connect();
             $this->_connectingGatewayAddresses[$addr] = $addr;

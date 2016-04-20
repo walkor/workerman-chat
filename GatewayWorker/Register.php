@@ -34,6 +34,12 @@ class Register extends Worker
      * {@inheritdoc}
      */
     public $reloadable = false;
+    
+    /**
+     * 秘钥
+     * @var string
+     */
+    public $secretKey = '';
 
     /**
      * 所有 gateway 的连接
@@ -102,22 +108,30 @@ class Register extends Worker
     {
         // 删除定时器
         Timer::del($connection->timeout_timerid);
-        $data  = json_decode($data, true);
-        $event = $data['event'];
+        $data       = json_decode($data, true);
+        $event      = $data['event'];
+        $secret_key = isset($data['secret_key']) ? $data['secret_key'] : '';
         // 开始验证
         switch ($event) {
             // 是 gateway 连接
             case 'gateway_connect':
                 if (empty($data['address'])) {
                     echo "address not found\n";
-                    $connection->close();
-                    return;
+                    return $connection->close();
+                }
+                if ($secret_key !== $this->secretKey) {
+                    echo "Register: Key does not match $secret_key !== {$this->secretKey}\n";
+                    return $connection->close();
                 }
                 $this->_gatewayConnections[$connection->id] = $data['address'];
                 $this->broadcastAddresses();
                 break;
             // 是 worker 连接
             case 'worker_connect':
+                if ($secret_key !== $this->secretKey) {
+                    echo "Register: Key does not match $secret_key !== {$this->secretKey}\n";
+                    return $connection->close();
+                }
                 $this->_workerConnections[$connection->id] = $connection;
                 $this->broadcastAddresses($connection);
                 break;

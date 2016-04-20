@@ -94,6 +94,9 @@ class GatewayProtocol
 
     // 心跳
     const CMD_PING = 201;
+    
+    // GatewayClient连接gateway事件
+    const CMD_GATEWAY_CLIENT_CONNECT = 202;
 
     // 包体是标量
     const FLAG_BODY_IS_SCALAR = 0x01;
