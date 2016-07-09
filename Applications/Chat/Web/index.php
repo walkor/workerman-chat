@@ -90,8 +90,7 @@
     function show_prompt(){  
         name = prompt('输入你的名字：', '');
         if(!name || name=='null'){  
-            alert("输入名字为空或者为'null'，请重新输入！");  
-            show_prompt();
+            name = '游客';
         }
     }  
 
