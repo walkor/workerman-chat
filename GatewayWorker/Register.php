@@ -78,7 +78,10 @@ class Register extends Worker
 
         // 记录进程启动的时间
         $this->_startTime = time();
-
+        
+        // 强制使用text协议
+        $this->protocol = '\Workerman\Protocols\Text';
+        
         // 运行父方法
         parent::run();
     }
@@ -104,11 +107,16 @@ class Register extends Worker
      * @param string                                    $data
      * @return void
      */
-    public function onMessage($connection, $data)
+    public function onMessage($connection, $buffer)
     {
         // 删除定时器
         Timer::del($connection->timeout_timerid);
-        $data       = json_decode($data, true);
+        $data       = @json_decode($buffer, true);
+        if (empty($data['event'])) {
+            $error = "Bad request for Gegister service. If you are a client please connect Gateway. Request info(IP:".$connection->getRemoteIp().", Request Buffer:$buffer)\n";
+            echo $error;
+            return $connection->close($error);
+        }
         $event      = $data['event'];
         $secret_key = isset($data['secret_key']) ? $data['secret_key'] : '';
         // 开始验证
@@ -138,7 +146,7 @@ class Register extends Worker
             case 'ping':
                 break;
             default:
-                echo "unknown event $event\n";
+                echo "unknown event:$event IP: ".$connection->getRemoteIp()." Buffer:$buffer\n";
                 $connection->close();
         }
     }
