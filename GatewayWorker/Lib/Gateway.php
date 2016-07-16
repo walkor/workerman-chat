@@ -91,9 +91,11 @@ class Gateway
                 if (isset($exclude_client_id[$client_id])) {
                     continue;
                 }
-                $address                                     = Context::clientIdToAddress($client_id);
-                $key                                         = long2ip($address['local_ip']) . ":{$address['local_port']}";
-                $data_array[$key][$address['connection_id']] = $address['connection_id'];
+                $address = Context::clientIdToAddress($client_id);
+                if ($address) {
+                    $key                                         = long2ip($address['local_ip']) . ":{$address['local_port']}";
+                    $data_array[$key][$address['connection_id']] = $address['connection_id'];
+                }
             }
             foreach ($data_array as $addr => $connection_id_list) {
                 $the_gateway_data             = $gateway_data;
@@ -178,6 +180,9 @@ class Gateway
     public static function isOnline($client_id)
     {
         $address_data = Context::clientIdToAddress($client_id);
+        if (!$address_data) {
+            return 0;
+        }
         $address      = long2ip($address_data['local_ip']) . ":{$address_data['local_port']}";
         if (isset(self::$businessWorker)) {
             if (!isset(self::$businessWorker->gatewayConnections[$address])) {
@@ -414,6 +419,9 @@ class Gateway
         } // 不是发给当前用户则使用存储中的地址
         else {
             $address_data = Context::clientIdToAddress($client_id);
+            if (!$address_data) {
+                return false;
+            }
             $address      = long2ip($address_data['local_ip']) . ":{$address_data['local_port']}";
             return self::kickAddress($address, $address_data['connection_id']);
         }
@@ -612,6 +620,9 @@ class Gateway
     public static function getSession($client_id)
     {
         $address_data = Context::clientIdToAddress($client_id);
+        if (!$address_data) {
+            return false;
+        }
         $address      = long2ip($address_data['local_ip']) . ":{$address_data['local_port']}";
         if (isset(self::$businessWorker)) {
             if (!isset(self::$businessWorker->gatewayConnections[$address])) {
@@ -641,6 +652,9 @@ class Gateway
             $connection_id = Context::$connection_id;
         } else {
             $address_data  = Context::clientIdToAddress($client_id);
+            if (!$address_data) {
+                return false;
+            }
             $address       = long2ip($address_data['local_ip']) . ":{$address_data['local_port']}";
             $connection_id = $address_data['connection_id'];
         }
@@ -795,10 +809,12 @@ class Gateway
     {
         $address_connection_array = array();
         foreach ($client_id_array as $client_id) {
-            $address_data                                                       = Context::clientIdToAddress($client_id);
-            $address                                                            = long2ip($address_data['local_ip']) .
-                ":{$address_data['local_port']}";
-            $address_connection_array[$address][$address_data['connection_id']] = $address_data['connection_id'];
+            $address_data = Context::clientIdToAddress($client_id);
+            if ($address_data) {
+                $address                                                            = long2ip($address_data['local_ip']) .
+                    ":{$address_data['local_port']}";
+                $address_connection_array[$address][$address_data['connection_id']] = $address_data['connection_id'];
+            }
         }
         return $address_connection_array;
     }

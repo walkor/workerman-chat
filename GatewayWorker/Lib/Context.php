@@ -128,7 +128,8 @@ class Context
     public static function clientIdToAddress($client_id)
     {
         if (strlen($client_id) !== 20) {
-            throw new Exception("client_id $client_id is invalid");
+            echo new Exception("client_id $client_id is invalid");
+            return false;
         }
         return unpack('Nlocal_ip/nlocal_port/Nconnection_id', pack('H*', $client_id));
     }
