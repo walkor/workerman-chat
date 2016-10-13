@@ -95,7 +95,7 @@ class Register extends Worker
     public function onConnect($connection)
     {
         $connection->timeout_timerid = Timer::add(10, function () use ($connection) {
-            echo "auth timeout\n";
+            echo "Register auth timeout (".$connection->getRemoteIp()."). See http://wiki.workerman.net/Error4\n";
             $connection->close();
         }, null, false);
     }
@@ -113,7 +113,7 @@ class Register extends Worker
         Timer::del($connection->timeout_timerid);
         $data       = @json_decode($buffer, true);
         if (empty($data['event'])) {
-            $error = "Bad request for Gegister service. If you are a client please connect Gateway. Request info(IP:".$connection->getRemoteIp().", Request Buffer:$buffer)\n";
+            $error = "Bad request for Register service. Request info(IP:".$connection->getRemoteIp().", Request Buffer:$buffer). See http://wiki.workerman.net/Error4\n";
             echo $error;
             return $connection->close($error);
         }
@@ -146,7 +146,7 @@ class Register extends Worker
             case 'ping':
                 break;
             default:
-                echo "unknown event:$event IP: ".$connection->getRemoteIp()." Buffer:$buffer\n";
+                echo "Register unknown event:$event IP: ".$connection->getRemoteIp()." Buffer:$buffer. See http://wiki.workerman.net/Error4\n";
                 $connection->close();
         }
     }
