@@ -1,7 +1,7 @@
 {
     "name"  : "workerman/workerman-chat",
     "type"  : "project",
-    "keywords": [chat],
+    "keywords": ["chat"],
     "homepage": "http://www.workerman.net",
     "license" : "MIT",
     "require": {
