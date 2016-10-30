@@ -218,7 +218,10 @@ class TcpConnection extends ConnectionInterface
         $this->id      = $this->_id = self::$_idRecorder++;
         $this->_socket = $socket;
         stream_set_blocking($this->_socket, 0);
-        stream_set_read_buffer($this->_socket, 0);
+        // Compatible with hhvm
+        if (function_exists('stream_set_read_buffer')) {
+            stream_set_read_buffer($this->_socket, 0);
+        }
         Worker::$globalEvent->add($this->_socket, EventInterface::EV_READ, array($this, 'baseRead'));
         $this->maxSendBufferSize = self::$defaultMaxSendBufferSize;
         $this->_remoteAddress    = $remote_address;
@@ -243,7 +246,14 @@ class TcpConnection extends ConnectionInterface
         }
 
         if ($this->_status === self::STATUS_INITIAL || $this->_status === self::STATUS_CONNECTING) {
+            if ($this->_sendBuffer) {
+                if ($this->bufferIsFull()) {
+                    self::$statistics['send_fail']++;
+                    return false;
+                }
+            }
             $this->_sendBuffer .= $send_buffer;
+            $this->checkBufferWillFull();
             return null;
         } elseif ($this->_status === self::STATUS_CLOSING || $this->_status === self::STATUS_CLOSED) {
             return false;
@@ -280,29 +290,18 @@ class TcpConnection extends ConnectionInterface
                 $this->_sendBuffer = $send_buffer;
             }
             Worker::$globalEvent->add($this->_socket, EventInterface::EV_WRITE, array($this, 'baseWrite'));
-            // Check if the send buffer is full.
-            $this->checkBufferIsFull();
+            // Check if the send buffer will be full.
+            $this->checkBufferWillFull();
             return null;
         } else {
-            // Buffer has been marked as full but still has data to send the packet is discarded.
-            if ($this->maxSendBufferSize <= strlen($this->_sendBuffer)) {
+            if ($this->bufferIsFull()) {
                 self::$statistics['send_fail']++;
-                if ($this->onError) {
-                    try {
-                        call_user_func($this->onError, $this, WORKERMAN_SEND_FAIL, 'send buffer full and drop package');
-                    } catch (\Exception $e) {
-                        Worker::log($e);
-                        exit(250);
-                    } catch (\Error $e) {
-                        Worker::log($e);
-                        exit(250);
-                    }
-                }
                 return false;
             }
+
             $this->_sendBuffer .= $send_buffer;
             // Check if the send buffer is full.
-            $this->checkBufferIsFull();
+            $this->checkBufferWillFull();
         }
     }
 
@@ -565,11 +564,11 @@ class TcpConnection extends ConnectionInterface
     }
 
     /**
-     * Check whether the send buffer is full.
+     * Check whether the send buffer will be full.
      *
      * @return void
      */
-    protected function checkBufferIsFull()
+    protected function checkBufferWillFull()
     {
         if ($this->maxSendBufferSize <= strlen($this->_sendBuffer)) {
             if ($this->onBufferFull) {
@@ -584,6 +583,31 @@ class TcpConnection extends ConnectionInterface
                 }
             }
         }
+    }
+
+    /**
+     * Whether send buffer is full.
+     *
+     * @return bool
+     */
+    protected function bufferIsFull()
+    {
+        // Buffer has been marked as full but still has data to send then the packet is discarded.
+        if ($this->maxSendBufferSize <= strlen($this->_sendBuffer)) {
+            if ($this->onError) {
+                try {
+                    call_user_func($this->onError, $this, WORKERMAN_SEND_FAIL, 'send buffer full and drop package');
+                } catch (\Exception $e) {
+                    Worker::log($e);
+                    exit(250);
+                } catch (\Error $e) {
+                    Worker::log($e);
+                    exit(250);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -611,6 +635,18 @@ class TcpConnection extends ConnectionInterface
         if ($this->onClose) {
             try {
                 call_user_func($this->onClose, $this);
+            } catch (\Exception $e) {
+                Worker::log($e);
+                exit(250);
+            } catch (\Error $e) {
+                Worker::log($e);
+                exit(250);
+            }
+        }
+        // Try to emit protocol::onClose
+        if (method_exists($this->protocol, 'onClose')) {
+            try {
+                call_user_func(array($this->protocol, 'onClose'), $this);
             } catch (\Exception $e) {
                 Worker::log($e);
                 exit(250);
