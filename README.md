@@ -14,6 +14,12 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
  * 支持多服务器部署
  * 业务逻辑全部在一个文件中，快速入门可以参考这个文件[Applications/Chat/Event.php](https://github.com/walkor/workerman-chat/blob/master/Applications/Chat/Event.php)   
   
+下载安装
+=====
+1、git clone https://github.com/walkor/workerman-chat
+
+2、composer install
+
 启动停止(Linux系统)
 =====
 以debug方式启动  
