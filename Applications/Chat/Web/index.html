@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery-emoji by eshengsky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="lib/css/bootstrap.css"/>
+    <link rel="stylesheet" href="lib/css/jquery.mCustomScrollbar.min.css"/>
+    <link rel="stylesheet" href="dist/css/jquery.emoji.css"/>
+    <link rel="stylesheet" href="lib/css/railscasts.css"/>
+    <link rel="stylesheet" href="dist/css/index.css"/>
+</head>
+<body>
+<section class="page-header">
+    <h1 class="project-name">jQuery-emoji</h1>
+    <h2 class="project-tagline">Let textarea or editable div has ability to insert emoji. <br>让文本框或div具备插入表情功能。 </h2>
+    <a href="https://github.com/eshengsky/jQuery-emoji" class="btn">View on GitHub</a>
+    <a href="https://github.com/eshengsky/jQuery-emoji/zipball/master" class="btn">Download .zip</a>
+    <a href="https://github.com/eshengsky/jQuery-emoji/tarball/master" class="btn">Download .tar.gz</a>
+</section>
+<section class="main-content container">
+    <h2>功能 features</h2>
+    <ul>
+        <li>支持给textarea或可编辑div加上表情功能，自动识别元素类型。<br>Support for adding emoji into textarea or editable div, automatic
+            identification of element types.
+        </li>
+        <li>如果是textarea，则选择表情后插入表情代码，如果是可编辑div，则直接插入表情图片。<br>If it is textarea element,will insert code string of emoji,
+            else, will insert emoji picture directly.
+        </li>
+        <li>支持自定义表情代码的格式。<br>Support for specifying the code format of emoji.</li>
+        <li>支持将表情代码转换为表情图片。<br>Support for converting the code string of emoji into emoji picture.</li>
+        <li>支持多组表情并提供tab切换。<br>Support for multiple groups of emoji and tabs to toggle.</li>
+        <li>示例已带有百度贴吧和qq高清2套表情。<br>The demo has been with 2 sets of emojis:Baidu tieba emoji & QQ HD emoji.</li>
+        <li>同一页面支持多个表情实例。<br>Support for multiple instances in one page.</li>
+    </ul>
+    <h2>示例 demo</h2>
+    <div class="row firstRow">
+        <div class="col-md-6">
+            <h4>文本框 textarea</h4>
+            <textarea class="form-control" id="content" rows="3"></textarea>
+            <div class="m-t-70">
+                <button class="btn btn-primary m-t-70" id="btnLoad1">加载表情 load emoji</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>代码 code</h4>
+            <pre class="pre-scrollable"><code class="javascript">$("#content").emoji({
+    showTab: true,
+    animation: 'fade',
+    icons: [{
+        name: "贴吧表情",
+        path: "dist/img/tieba/",
+        maxNum: 50,
+        file: ".jpg",
+        placeholder: ":{alias}:",
+        alias: {
+            1: "hehe",
+            2: "haha",
+            3: "tushe",
+            4: "a",
+            5: "ku",
+            6: "lu",
+            7: "kaixin",
+            8: "han",
+            9: "lei",
+            10: "heixian",
+            11: "bishi",
+            12: "bugaoxing",
+            13: "zhenbang",
+            14: "qian",
+            15: "yiwen",
+            16: "yinxian",
+            17: "tu",
+            18: "yi",
+            19: "weiqu",
+            20: "huaxin",
+            21: "hu",
+            22: "xiaonian",
+            23: "neng",
+            24: "taikaixin",
+            25: "huaji",
+            26: "mianqiang",
+            27: "kuanghan",
+            28: "guai",
+            29: "shuijiao",
+            30: "jinku",
+            31: "shengqi",
+            32: "jinya",
+            33: "pen",
+            34: "aixin",
+            35: "xinsui",
+            36: "meigui",
+            37: "liwu",
+            38: "caihong",
+            39: "xxyl",
+            40: "taiyang",
+            41: "qianbi",
+            42: "dnegpao",
+            43: "chabei",
+            44: "dangao",
+            45: "yinyue",
+            46: "haha2",
+            47: "shenli",
+            48: "damuzhi",
+            49: "ruo",
+            50: "OK"
+        },
+        title: {
+            1: "呵呵",
+            2: "哈哈",
+            3: "吐舌",
+            4: "啊",
+            5: "酷",
+            6: "怒",
+            7: "开心",
+            8: "汗",
+            9: "泪",
+            10: "黑线",
+            11: "鄙视",
+            12: "不高兴",
+            13: "真棒",
+            14: "钱",
+            15: "疑问",
+            16: "阴脸",
+            17: "吐",
+            18: "咦",
+            19: "委屈",
+            20: "花心",
+            21: "呼~",
+            22: "笑脸",
+            23: "冷",
+            24: "太开心",
+            25: "滑稽",
+            26: "勉强",
+            27: "狂汗",
+            28: "乖",
+            29: "睡觉",
+            30: "惊哭",
+            31: "生气",
+            32: "惊讶",
+            33: "喷",
+            34: "爱心",
+            35: "心碎",
+            36: "玫瑰",
+            37: "礼物",
+            38: "彩虹",
+            39: "星星月亮",
+            40: "太阳",
+            41: "钱币",
+            42: "灯泡",
+            43: "茶杯",
+            44: "蛋糕",
+            45: "音乐",
+            46: "haha",
+            47: "胜利",
+            48: "大拇指",
+            49: "弱",
+            50: "OK"
+        }
+    }, {
+        path: "dist/img/qq/",
+        maxNum: 91,
+        excludeNums: [41, 45, 54],
+        file: ".gif",
+        placeholder: "#qq_{alias}#"
+    }]
+});</code></pre>
+        </div>
+    </div>
+    <hr/>
+    <div class="row m-t-20">
+        <div class="col-md-6">
+            <h4>可编辑div editable div</h4>
+            <div id="editor" contenteditable="true"></div>
+            <button id="btn" class="btn btn-sm btn-default">:)</button>
+            <div class="m-t-70">
+                <button class="btn btn-primary m-t-70" id="btnLoad2">加载表情 load emoji</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>代码 code</h4>
+            <pre class="pre-scrollable"><code class="javascript">$("#editor").emoji({
+    button: "#btn",
+    showTab: false,
+    animation: 'slide',
+    icons: [{
+        name: "QQ表情",
+        path: "dist/img/qq/",
+        maxNum: 91,
+        excludeNums: [41, 45, 54],
+        file: ".gif"
+    }]
+});</code></pre>
+        </div>
+    </div>
+    <hr/>
+    <div class="row m-t-20">
+        <div class="col-md-6">
+            <h4>文本转换 text parse</h4>
+            <div class="panel panel-default" id="sourceText">
+                <div class="panel-body">
+                    <span>It's a:taiyang:day, :xxx: I had a:chabei:, and feel nice~#qq_14#</span>
+                </div>
+            </div>
+            <div class="m-t-70">
+                <button class="btn btn-primary" id="btnParse">转换 parse</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>代码 code</h4>
+            <pre class="pre-scrollable"><code class="javascript">$("#sourceText").emojiParse({
+    icons: [{
+        path: "dist/img/tieba/",
+        file: ".jpg",
+        placeholder: ":{alias}:",
+        alias: {
+            1: "hehe",
+            2: "haha",
+            3: "tushe",
+            4: "a",
+            5: "ku",
+            6: "lu",
+            7: "kaixin",
+            8: "han",
+            9: "lei",
+            10: "heixian",
+            11: "bishi",
+            12: "bugaoxing",
+            13: "zhenbang",
+            14: "qian",
+            15: "yiwen",
+            16: "yinxian",
+            17: "tu",
+            18: "yi",
+            19: "weiqu",
+            20: "huaxin",
+            21: "hu",
+            22: "xiaonian",
+            23: "neng",
+            24: "taikaixin",
+            25: "huaji",
+            26: "mianqiang",
+            27: "kuanghan",
+            28: "guai",
+            29: "shuijiao",
+            30: "jinku",
+            31: "shengqi",
+            32: "jinya",
+            33: "pen",
+            34: "aixin",
+            35: "xinsui",
+            36: "meigui",
+            37: "liwu",
+            38: "caihong",
+            39: "xxyl",
+            40: "taiyang",
+            41: "qianbi",
+            42: "dnegpao",
+            43: "chabei",
+            44: "dangao",
+            45: "yinyue",
+            46: "haha2",
+            47: "shenli",
+            48: "damuzhi",
+            49: "ruo",
+            50: "OK"
+        }
+    }, {
+        path: "dist/img/qq/",
+        file: ".gif",
+        placeholder: "#qq_{alias}#"
+    }]
+});</code></pre>
+        </div>
+    </div>
+    <h2>使用 usage</h2>
+    <h3>安装 install</h3>
+    <pre><code class="bash">$ bower install jquery-emoji</code></pre>
+    <h3>引用 reference</h3>
+    <p>
+        首先在页面上引用css文件和js文件，css文件一般在&lt;head&gt;中添加，js文件一般在&lt;/body&gt;之前添加。注意要先引用jquery和jquery.mCustomScrollbar，再引用该js。<br>
+        Firstly reference the css and js file of this plugin, the best location of the css reference is in &lt;head&gt;,
+        and the js is before &lt;/body&gt;, make sure the js follows jQuery and jquery.mCustomScrollbar.
+    </p>
+    <pre><code class="html">&lt;head&gt;
+    ...
+    &lt;!--the css for jquery.mCustomScrollbar--&gt;
+    &lt;link rel="stylesheet" href="lib/css/jquery.mCustomScrollbar.min.css"/&gt;
+    &lt;!--the css for this plugin--&gt;
+    &lt;link rel="stylesheet" href="css/jquery.emoji.css"/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+...
+&lt;!--the js for jquery--&gt;
+&lt;script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js">&lt;/script&gt;
+&lt;!--(Optional) the js for jquery.mCustomScrollbar's addon--&gt;
+&lt;script src="lib/script/jquery.mousewheel-3.0.6.min.js">&lt;/script&gt;
+&lt;!--the js for jquery.mCustomScrollbar--&gt;
+&lt;script src="lib/script/jquery.mCustomScrollbar.min.js">&lt;/script&gt;
+&lt;!--the js for this plugin--&gt;
+&lt;script src="js/jquery.emoji.js">&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+    <h3>调用 invoke</h3>
+    <p>
+        在文本框或可编辑div上初始化emoji<br>
+        initialize emoji on textarea or editable div
+    </p>
+    <pre><code class="javascript">$("#content").emoji(options);</code></pre>
+    <h2>参数 options</h2>
+    <table class="table table-bordered table-striped table-hover">
+        <tr>
+            <th style="width: 170px;">名称 name</th>
+            <th style="width: 80px;">类型 type</th>
+            <th style="width: 120px;">默认值 default</th>
+            <th>说明 desc</th>
+        </tr>
+        <tr>
+            <td>button</td>
+            <td>String</td>
+            <td></td>
+            <td>
+                触发表情面板的按钮的选择器，如"#btn1"，若指定则将表情选择面板绑定到该按钮，若未指定，则自动创建一个按钮。<br>
+                button selector, such as "#btn1", if has value, bind it to the emoji panel. If it is empty, then
+                automatically creates a button.
+            </td>
+        </tr>
+        <tr>
+            <td>showTab</td>
+            <td>Boolean</td>
+            <td>true</td>
+            <td>
+                当只有一组表情时，是否仍然显示Tab。<br>
+                if show tab when only one emoji group.
+            </td>
+        </tr>
+        <tr>
+            <td>animation</td>
+            <td>String</td>
+            <td>'fade'</td>
+            <td>
+                表情面板动画效果，可能的值：'fade':淡入淡出，'slide':滚动，'none':无动画。<br>
+                the animation effect for emoji panel, possible values: 'fade':fade-in fade-out, 'slide':slide up & down,
+                'none':no animation.
+            </td>
+        </tr>
+        <tr>
+            <td>icons</td>
+            <td>Array</td>
+            <td>[]</td>
+            <td>
+                表情组。<br>
+                icons group.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ name }</td>
+            <td>String</td>
+            <td>
+                group(<i>n</i>)
+            </td>
+            <td>
+                该组表情名称。<br>
+                the name of the icons group.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ path }</td>
+            <td>String</td>
+            <td></td>
+            <td>
+                <strong>必填。</strong>该组表情路径（表情文件必须是1,2,3...命名）。<br>
+                <strong>required.</strong>the path of the icons group(icon file must named as 1 ,2 ,3...).
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ maxNum }</td>
+            <td>Number</td>
+            <td></td>
+            <td>
+                <strong>必填。</strong>该组表情文件名的最大数。<br>
+                <strong>required.</strong>the max number of the icons group file name.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ excludeNums }</td>
+            <td>Array</td>
+            <td>[]</td>
+            <td>
+                要排除的表情文件集合。<br>
+                the exclude icon files.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ file }</td>
+            <td>String</td>
+            <td>'.jpg'</td>
+            <td>
+                表情文件的后缀名。<br>
+                the icon file extension.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ placeholder }</td>
+            <td>String</td>
+            <td>
+                '#em(<i>n</i>)_{alias}#'<br>
+            </td>
+            <td>
+                该组表情插入文本框后的占位标识，必须包含'{alias}'部分，'{alias}'会被自动替换成每个表情的标识。<br>
+                the placeholder for the icon group, must contains '{alias}' in it, it will be replaced with the code of each emoji.
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ alias }</td>
+            <td>String</td>
+            <td></td>
+            <td>
+                每个表情对应的标识，若未指定，则为表情文件名（1,2,3...），若指定为一个对象，则会根据对象属性名（1,2,3...）查找属性的值作为表情标识。<br>
+                the flag for each emoji, if undefined, it refers the name of emoji file (1,2,3...), else if specify an object, it will look for the value of the attribute as the emoji flag according to the attribute name (1,2,3...).
+            </td>
+        </tr>
+        <tr>
+            <td>icons:{ title }</td>
+            <td>Object</td>
+            <td></td>
+            <td>
+                每个表情指上去显示的文字，格式：fileName:title, 如：1:'good'。<br>
+                the shows title for each emoji, format: fileName:title, such as: 1:'good'.
+            </td>
+        </tr>
+    </table>
+    <h5>
+        * <i>n:</i> 分组的次序 index of the group
+    </h5>
+    <h2>方法 method</h2>
+    <h4>
+        <code>.emoji(options);</code>
+    </h4>
+    <p>
+        初始化表情。<br>
+        initialize emoji.
+    </p>
+    <pre><code class="javascript">$("#editor").emoji({
+    icons: [{
+        name: "QQ表情",
+        path: "img/qq/",
+        maxNum: 91,
+        excludeNums: [41, 45, 54],
+        file: ".gif",
+        placeholder: "#qq_{alias}#"
+    }]
+});</code></pre>
+    <h4>
+        <code>.emoji('show');</code>
+    </h4>
+    <p>
+        显示表情面板。<br>
+        show emoji panel.
+    </p>
+    <pre><code class="javascript">$("#editor").emoji('show');</code></pre>
+    <h4>
+        <code>.emoji('hide');</code>
+    </h4>
+    <p>
+        隐藏表情面板。<br>
+        hide emoji panel.
+    </p>
+    <pre><code class="javascript">$("#editor").emoji('hide');</code></pre>
+    <h4>
+        <code>.emoji('toggle');</code>
+    </h4>
+    <p>
+        切换显示隐藏表情面板。<br>
+        show or hide emoji panel.
+    </p>
+    <pre><code class="javascript">$("#editor").emoji('toggle');</code></pre>
+    <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/eshengsky/jquery-emoji">jQuery-emoji</a> is maintained by <a
+                href="https://github.com/eshengsky">eshengsky</a>.</span>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+    </footer>
+</section>
+<script src="lib/script/jquery.min.js"></script>
+<script src="lib/script/highlight.pack.js"></script>
+<script src="lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+<script src="lib/script/jquery.mCustomScrollbar.min.js"></script>
+<script src="dist/js/jquery.emoji.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+
+    $("#btnLoad1").click(function () {
+        $("#content").emoji({
+            showTab: true,
+            animation: 'fade',
+            icons: [{
+                name: "贴吧表情",
+                path: "dist/img/tieba/",
+                maxNum: 50,
+                file: ".jpg",
+                placeholder: ":{alias}:",
+                alias: {
+                    1: "hehe",
+                    2: "haha",
+                    3: "tushe",
+                    4: "a",
+                    5: "ku",
+                    6: "lu",
+                    7: "kaixin",
+                    8: "han",
+                    9: "lei",
+                    10: "heixian",
+                    11: "bishi",
+                    12: "bugaoxing",
+                    13: "zhenbang",
+                    14: "qian",
+                    15: "yiwen",
+                    16: "yinxian",
+                    17: "tu",
+                    18: "yi",
+                    19: "weiqu",
+                    20: "huaxin",
+                    21: "hu",
+                    22: "xiaonian",
+                    23: "neng",
+                    24: "taikaixin",
+                    25: "huaji",
+                    26: "mianqiang",
+                    27: "kuanghan",
+                    28: "guai",
+                    29: "shuijiao",
+                    30: "jinku",
+                    31: "shengqi",
+                    32: "jinya",
+                    33: "pen",
+                    34: "aixin",
+                    35: "xinsui",
+                    36: "meigui",
+                    37: "liwu",
+                    38: "caihong",
+                    39: "xxyl",
+                    40: "taiyang",
+                    41: "qianbi",
+                    42: "dnegpao",
+                    43: "chabei",
+                    44: "dangao",
+                    45: "yinyue",
+                    46: "haha2",
+                    47: "shenli",
+                    48: "damuzhi",
+                    49: "ruo",
+                    50: "OK"
+                },
+                title: {
+                    1: "呵呵",
+                    2: "哈哈",
+                    3: "吐舌",
+                    4: "啊",
+                    5: "酷",
+                    6: "怒",
+                    7: "开心",
+                    8: "汗",
+                    9: "泪",
+                    10: "黑线",
+                    11: "鄙视",
+                    12: "不高兴",
+                    13: "真棒",
+                    14: "钱",
+                    15: "疑问",
+                    16: "阴脸",
+                    17: "吐",
+                    18: "咦",
+                    19: "委屈",
+                    20: "花心",
+                    21: "呼~",
+                    22: "笑脸",
+                    23: "冷",
+                    24: "太开心",
+                    25: "滑稽",
+                    26: "勉强",
+                    27: "狂汗",
+                    28: "乖",
+                    29: "睡觉",
+                    30: "惊哭",
+                    31: "生气",
+                    32: "惊讶",
+                    33: "喷",
+                    34: "爱心",
+                    35: "心碎",
+                    36: "玫瑰",
+                    37: "礼物",
+                    38: "彩虹",
+                    39: "星星月亮",
+                    40: "太阳",
+                    41: "钱币",
+                    42: "灯泡",
+                    43: "茶杯",
+                    44: "蛋糕",
+                    45: "音乐",
+                    46: "haha",
+                    47: "胜利",
+                    48: "大拇指",
+                    49: "弱",
+                    50: "OK"
+                }
+            }, {
+                path: "dist/img/qq/",
+                maxNum: 91,
+                excludeNums: [41, 45, 54],
+                file: ".gif",
+                placeholder: "#qq_{alias}#"
+            }]
+        });
+    });
+
+    $("#btnLoad2").click(function () {
+        $("#editor").emoji({
+            button: "#btn",
+            showTab: false,
+            animation: 'slide',
+            icons: [{
+                name: "QQ表情",
+                path: "dist/img/qq/",
+                maxNum: 91,
+                excludeNums: [41, 45, 54],
+                file: ".gif"
+            }]
+        });
+    });
+
+    $("#btnParse").click(function () {
+        $("#sourceText").emojiParse({
+            icons: [{
+                path: "dist/img/tieba/",
+                file: ".jpg",
+                placeholder: ":{alias}:",
+                alias: {
+                    1: "hehe",
+                    2: "haha",
+                    3: "tushe",
+                    4: "a",
+                    5: "ku",
+                    6: "lu",
+                    7: "kaixin",
+                    8: "han",
+                    9: "lei",
+                    10: "heixian",
+                    11: "bishi",
+                    12: "bugaoxing",
+                    13: "zhenbang",
+                    14: "qian",
+                    15: "yiwen",
+                    16: "yinxian",
+                    17: "tu",
+                    18: "yi",
+                    19: "weiqu",
+                    20: "huaxin",
+                    21: "hu",
+                    22: "xiaonian",
+                    23: "neng",
+                    24: "taikaixin",
+                    25: "huaji",
+                    26: "mianqiang",
+                    27: "kuanghan",
+                    28: "guai",
+                    29: "shuijiao",
+                    30: "jinku",
+                    31: "shengqi",
+                    32: "jinya",
+                    33: "pen",
+                    34: "aixin",
+                    35: "xinsui",
+                    36: "meigui",
+                    37: "liwu",
+                    38: "caihong",
+                    39: "xxyl",
+                    40: "taiyang",
+                    41: "qianbi",
+                    42: "dnegpao",
+                    43: "chabei",
+                    44: "dangao",
+                    45: "yinyue",
+                    46: "haha2",
+                    47: "shenli",
+                    48: "damuzhi",
+                    49: "ruo",
+                    50: "OK"
+                }
+            }, {
+                path: "dist/img/qq/",
+                file: ".gif",
+                placeholder: "#qq_{alias}#"
+            }]
+        });
+    });
+</script>
+</body>
+</html>
