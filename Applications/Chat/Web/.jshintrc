@@ -1,0 +1,21 @@
+{
+  "bitwise": true,
+  "browser": true,
+  "eqeqeq": true,
+  "forin": true,
+  "freeze": false,
+  "indent": 2,
+  "maxdepth": 6,
+  "maxparams": 6,
+  "maxstatements": 150,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonbsp": true,
+  "nonew": true,
+  "quotmark": "single",
+  "trailing": true,
+  "immed": true,
+  "loopfunc": true,
+  "jquery": true
+}
