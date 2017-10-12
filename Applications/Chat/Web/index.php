@@ -50,7 +50,7 @@
     function onmessage(e)
     {
         console.log(e.data);
-        var data = eval("("+e.data+")");
+        var data = JSON.parse(e.data);
         switch(data['type']){
             // 服务端ping客户端
             case 'ping':
