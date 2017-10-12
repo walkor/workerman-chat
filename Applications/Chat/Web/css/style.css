@@ -12,6 +12,8 @@ body
 {
 	min-height:600px;
 	background:#EEEEEE;
+	max-height: 80vh;
+	overflow: scroll;
 }
 
 .textarea
