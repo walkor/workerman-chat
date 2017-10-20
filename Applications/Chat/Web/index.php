@@ -2,11 +2,13 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>workerman-chat PHP聊天室 Websocket(HTLM5/Flash)+PHP多进程socket实时推送技术</title>
   <link href="/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/jquery-sinaEmotion-2.1.0.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 	
   <script type="text/javascript" src="/js/swfobject.js"></script>
   <script type="text/javascript" src="/js/web_socket.js"></script>
   <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-sinaEmotion-2.1.0.min.js"></script>
 
   <script type="text/javascript">
     if (typeof console == "undefined") {    this.console = { log: function (msg) {  } };}
@@ -121,7 +123,21 @@
 
     // 发言
     function say(from_client_id, from_client_name, content, time){
-    	$("#dialog").append('<div class="speech_item"><img src="http://lorempixel.com/38/38/?'+from_client_id+'" class="user_icon" /> '+from_client_name+' <br> '+time+'<div style="clear:both;"></div><p class="triangle-isosceles top">'+content+'</p> </div>');
+        //解析新浪微博图片
+        content = content.replace(/(http|https):\/\/[\w]+.sinaimg.cn[\S]+(jpg|png|gif)/gi, function(img){
+            return "<a target='_blank' href='"+img+"'>"+"<img src='"+img+"'>"+"</a>";}
+        );
+
+        //解析url
+        content = content.replace(/(http|https):\/\/[\S]+/gi, function(url){
+            if(url.indexOf(".sinaimg.cn/") < 0)
+                return "<a target='_blank' href='"+url+"'>"+url+"</a>";
+            else
+                return url;
+        }
+        );
+
+    	$("#dialog").append('<div class="speech_item"><img src="http://lorempixel.com/38/38/?'+from_client_id+'" class="user_icon" /> '+from_client_name+' <br> '+time+'<div style="clear:both;"></div><p class="triangle-isosceles top">'+content+'</p> </div>').parseEmotion();
     }
 
     $(function(){
@@ -129,7 +145,13 @@
 	    $("#client_list").change(function(){
 	         select_client_id = $("#client_list option:selected").attr("value");
 	    });
+        $('.face').click(function(event){
+            $(this).sinaEmotion();
+            event.stopPropagation();
+        });
     });
+
+
   </script>
 </head>
 <body onload="connect();">
@@ -146,6 +168,7 @@
                         <option value="all">所有人</option>
                     </select>
                     <textarea class="textarea thumbnail" id="textarea"></textarea>
+                   <input type="button" class="btn btn-default face" value="表情" />
                     <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
                </form>
                <div>
