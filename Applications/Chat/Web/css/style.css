@@ -100,6 +100,13 @@ body
     border-color:#D3FF93 transparent;
 }
 
+.speech_item img{
+    max-height: 300px;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
 .user_icon
 {
 	float:left;border:1px solid #DDDDDD;padding:2px;margin:0 5px 0 5px;

@@ -121,6 +121,20 @@
 
     // 发言
     function say(from_client_id, from_client_name, content, time){
+        //解析新浪微博图片
+        content = content.replace(/(http|https):\/\/[\w]+.sinaimg.cn[\S]+(jpg|png|gif)/gi, function(img){
+            return "<a target='_blank' href='"+img+"'>"+"<img src='"+img+"'>"+"</a>";}
+        );
+
+        //解析url
+        content = content.replace(/(http|https):\/\/[\S]+/gi, function(url){
+            if(url.indexOf(".sinaimg.cn/") < 0)
+                return "<a target='_blank' href='"+url+"'>"+url+"</a>";
+            else
+                return url;
+        }
+        );
+
     	$("#dialog").append('<div class="speech_item"><img src="http://lorempixel.com/38/38/?'+from_client_id+'" class="user_icon" /> '+from_client_name+' <br> '+time+'<div style="clear:both;"></div><p class="triangle-isosceles top">'+content+'</p> </div>');
     }
 
