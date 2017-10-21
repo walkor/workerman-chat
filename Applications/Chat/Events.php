@@ -35,9 +35,12 @@ class Events
     */
    public static function onMessage($client_id, $message)
    {
+	   $dotenv = new Dotenv\Dotenv(dirname(dirname(__DIR__)));
+	   $dotenv->load();
+
         // debug
         echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']}  client_id:$client_id session:".json_encode($_SESSION)." onMessage:".$message."\n";
-        
+
         // 客户端传递的是json数据
         $message_data = json_decode($message, true);
         if(!$message_data)
@@ -108,7 +111,26 @@ class Events
                     $new_message['content'] = "<b>你对".htmlspecialchars($message_data['to_client_name'])."说: </b>".nl2br(htmlspecialchars($message_data['content']));
                     return Gateway::sendToCurrentClient(json_encode($new_message));
                 }
-                
+
+                //记录聊天日志文件
+                $log = ['ip'=>$_SERVER['REMOTE_ADDR'],
+                        'name'=>$client_name,
+                        'content'=>$message_data['content'],
+                        'time'=>date('Y-m-d H:i:s')
+                ];
+
+                $log_dir = getenv("CHAT_LOG_DIR");
+                if(!file_exists($log_dir))
+                {
+                	if(mkdir($log_dir,777))
+                		echo "成功创建聊天记录保存目录{$log_dir}\n";
+                	else
+                		echo "聊天记录保存目录{$log_dir} 创建失败，请手动创建\n";
+                }
+
+                $log_file = $log_dir . "chat" . date('Y-m-d') . ".log";
+                file_put_contents($log_file,json_encode($log,JSON_UNESCAPED_UNICODE) . "\n",FILE_APPEND);
+
                 $new_message = array(
                     'type'=>'say', 
                     'from_client_id'=>$client_id,

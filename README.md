@@ -22,6 +22,13 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
 2、composer install
 
+3、配置.env文件
+
+配置
+=====
+聊天内容日志位置,注意权限问题，程序尝试自动创建该目录。
+CHAT_LOG_DIR=./logs/ 
+
 启动停止(Linux系统)
 =====
 以debug方式启动  
