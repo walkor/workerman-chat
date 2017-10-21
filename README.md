@@ -27,6 +27,7 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 配置
 =====
 聊天内容日志位置,注意权限问题，程序尝试自动创建该目录。
+
 CHAT_LOG_DIR=./logs/ 
 
 启动停止(Linux系统)
