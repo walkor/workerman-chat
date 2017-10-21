@@ -168,8 +168,10 @@
                         <option value="all">所有人</option>
                     </select>
                     <textarea class="textarea thumbnail" id="textarea"></textarea>
-                   <input type="button" class="btn btn-default face" value="表情" />
-                    <div class="say-btn"><input type="submit" class="btn btn-default" value="发表" /></div>
+                    <div class="say-btn">
+                        <input type="button" class="btn btn-default face pull-left" value="表情" />
+                        <input type="submit" class="btn btn-default" value="发表" />
+                    </div>
                </form>
                <div>
                &nbsp;&nbsp;&nbsp;&nbsp;<b>房间列表:</b>（当前在&nbsp;房间<?php echo isset($_GET['room_id'])&&intval($_GET['room_id'])>0 ? intval($_GET['room_id']):1; ?>）<br>
