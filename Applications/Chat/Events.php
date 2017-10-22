@@ -27,6 +27,11 @@ use \GatewayWorker\Lib\Gateway;
 
 class Events
 {
+	public static function onWorkerStart($businessWorker)
+	{
+		$dotenv = new Dotenv\Dotenv(dirname(dirname(__DIR__)));
+		$dotenv->load();
+	}
    
    /**
     * 有消息时
@@ -35,9 +40,6 @@ class Events
     */
    public static function onMessage($client_id, $message)
    {
-	   $dotenv = new Dotenv\Dotenv(dirname(dirname(__DIR__)));
-	   $dotenv->load();
-
         // debug
         echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']}  client_id:$client_id session:".json_encode($_SESSION)." onMessage:".$message."\n";
 
