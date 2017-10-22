@@ -24,6 +24,20 @@ $worker->count = 4;
 // 服务注册地址
 $worker->registerAddress = '127.0.0.1:1236';
 
+$worker->onWorkerStart = function($worker)
+{
+	//加载env文件
+	$dotenv = new Dotenv\Dotenv(dirname(dirname(__DIR__)));
+	$dotenv->load();
+
+	// 将db实例存储在全局变量中(也可以存储在某类的静态成员中)
+	if(getenv("CHAT_LOG_TYPE"))
+	{
+		global $db;
+		$db = new Workerman\MySQL\Connection(getenv('DB_HOST'), getenv('DB_PORT'), getenv("DB_USERNAME"), getenv("DB_PASSWORD"), getenv("DB_DATABASE"));
+	}
+};
+
 // 如果不是在根目录启动，则运行runAll方法
 if(!defined('GLOBAL_START'))
 {
