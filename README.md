@@ -25,6 +25,8 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
 3、配置.env文件
 
+4、创建聊天记录表
+
 
 配置
 =====
@@ -32,11 +34,11 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
 CHAT_LOG_DIR=./logs/ 
 
-聊天内容日志保存类型，file:文件,mysql:mysql数据库
+聊天内容日志保存类型，file:文件,mysql:mysql数据库，如果是 file 需要配置 CHAT_LOG_DIR (聊天记录保存目录)，如果是 myslq 需要配置数据库相关。
 
 CHAT_LOG_TYPE=file
 
-更多参加.env.example
+更多参见.env.example
 
 启动停止(Linux系统)
 =====
