@@ -31,8 +31,11 @@ $worker->onWorkerStart = function($worker)
 	$dotenv->load();
 
 	// 将db实例存储在全局变量中(也可以存储在某类的静态成员中)
-	global $db;
-	$db = new Workerman\MySQL\Connection(getenv('DB_HOST'), getenv('DB_PORT'), getenv("DB_USERNAME"), getenv("DB_PASSWORD"), getenv("DB_DATABASE"));
+	if(getenv("CHAT_LOG_TYPE"))
+	{
+		global $db;
+		$db = new Workerman\MySQL\Connection(getenv('DB_HOST'), getenv('DB_PORT'), getenv("DB_USERNAME"), getenv("DB_PASSWORD"), getenv("DB_DATABASE"));
+	}
 };
 
 // 如果不是在根目录启动，则运行runAll方法
