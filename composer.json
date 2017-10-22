@@ -6,6 +6,7 @@
     "license" : "MIT",
     "require": {
         "workerman/gateway-worker" : ">=3.0.0",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "workerman/mysql": "^1.0"
     }
 }

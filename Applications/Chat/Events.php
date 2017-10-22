@@ -27,12 +27,6 @@ use \GatewayWorker\Lib\Gateway;
 
 class Events
 {
-	public static function onWorkerStart($businessWorker)
-	{
-		$dotenv = new Dotenv\Dotenv(dirname(dirname(__DIR__)));
-		$dotenv->load();
-	}
-   
    /**
     * 有消息时
     * @param int $client_id
@@ -132,6 +126,15 @@ class Events
 
                 $log_file = $log_dir . "chat" . date('Y-m-d') . ".log";
                 file_put_contents($log_file,json_encode($log,JSON_UNESCAPED_UNICODE) . "\n",FILE_APPEND);
+
+	            global $db;
+	            // 插入
+	            $insert_id = $db->insert('chat_logs')->cols([
+		            'ip'      => $_SERVER[ 'REMOTE_ADDR' ],
+		            'name'    => $client_name,
+		            'content' => $message_data[ 'content' ],
+		            'time'    => date('Y-m-d H:i:s')
+	            ])->query();
 
                 $new_message = array(
                     'type'=>'say', 
