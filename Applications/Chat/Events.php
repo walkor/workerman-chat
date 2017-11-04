@@ -125,42 +125,10 @@ class Events
                     return Gateway::sendToCurrentClient(json_encode($new_message));
                 }
 
+                //日志保存 如果没有设置CHAT_LOG_TYPE就不会保存
                 $chat_log_type = getenv("CHAT_LOG_TYPE");
-                if($chat_log_type == "file")
-                {
-	                //记录聊天日志文件
-	                $log = ['ip'=>$_SERVER['REMOTE_ADDR'],
-	                        'name'=>$client_name,
-	                        'content'=>$message_data['content'],
-	                        'time'=>date('Y-m-d H:i:s')
-	                ];
-
-	                $log_dir = getenv("CHAT_LOG_DIR");
-	                if(!file_exists($log_dir))
-	                {
-		                if(mkdir($log_dir,777))
-			                echo "成功创建聊天记录保存目录{$log_dir}\n";
-		                else
-			                echo "聊天记录保存目录{$log_dir} 创建失败，请手动创建\n";
-	                }
-
-	                $log_file = $log_dir . "chat" . date('Y-m-d') . ".log";
-	                file_put_contents($log_file,json_encode($log,JSON_UNESCAPED_UNICODE) . "\n",FILE_APPEND);
-                }
-                elseif($chat_log_type == "mysql")
-                {
-	                global $db;
-	                // 插入
-	                $insert_id = $db->insert('chat_logs')->cols([
-		                'ip'      => $_SERVER[ 'REMOTE_ADDR' ],
-		                'name'    => $client_name,
-		                'content' => $message_data[ 'content' ],
-		                'time'    => date('Y-m-d H:i:s')
-	                ])->query();
-                }
-
-
-
+                $chatLog = new \App\Service\ChatLog($chat_log_type);
+	            $chatLog->add($_SERVER['REMOTE_ADDR'],$client_name,$message_data['content']);
 
                 $new_message = array(
                     'type'=>'say', 
