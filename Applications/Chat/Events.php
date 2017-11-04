@@ -43,6 +43,9 @@ class Events
         {
             return ;
         }
+
+	   $client_name_list =  new App\Service\ClientName();
+
         
         // 根据类型执行不同的业务
         switch($message_data['type'])
@@ -60,7 +63,21 @@ class Events
                 
                 // 把房间号昵称放到session中
                 $room_id = $message_data['room_id'];
-                $client_name = htmlspecialchars($message_data['client_name']);
+	            $client_name = htmlspecialchars($message_data['client_name']);
+
+	            //同一个聊天室昵称不能重复
+                if($client_name_list->exists($room_id,$client_name))
+                {
+	                $new_message = array(
+		                'type'=>'error',
+		                'code'=> 101,
+		                'msg'=> "同一个聊天室昵称不能重复",
+	                );
+	                Gateway::sendToCurrentClient(json_encode($new_message));
+	                return;
+                }
+
+	            $client_name_list->add($room_id,$client_name);
                 $_SESSION['room_id'] = $room_id;
                 $_SESSION['client_name'] = $client_name;
               
@@ -165,12 +182,16 @@ class Events
    {
        // debug
        echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']}  client_id:$client_id onClose:''\n";
-       
+
+	   $client_name_list = new App\Service\ClientName();
+
        // 从房间的客户端列表中删除
        if(isset($_SESSION['room_id']))
        {
            $room_id = $_SESSION['room_id'];
+	       $client_name = $_SESSION['client_name'];
            $new_message = array('type'=>'logout', 'from_client_id'=>$client_id, 'from_client_name'=>$_SESSION['client_name'], 'time'=>date('Y-m-d H:i:s'));
+	       $client_name_list->remove($room_id,$client_name);
            Gateway::sendToGroup($room_id, json_encode($new_message));
        }
    }
