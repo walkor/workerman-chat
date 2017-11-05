@@ -3,5 +3,3 @@
 .project
 .settings
 vendor
-.env
-composer.lock
