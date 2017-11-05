@@ -13,7 +13,6 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
  * 掉线自动重连
  * 微博图片自动解析
  * 聊天内容支持微博表情
- * 聊天内容支持多种方式记录，文件、数据库
  * 支持多服务器部署
  * 业务逻辑全部在一个文件中，快速入门可以参考这个文件[Applications/Chat/Event.php](https://github.com/walkor/workerman-chat/blob/master/Applications/Chat/Event.php)   
   
@@ -25,20 +24,11 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
 3、配置.env文件
 
-4、创建聊天记录表
-
-
 配置
 =====
 聊天内容日志位置,注意权限问题，程序尝试自动创建该目录。
 
 CHAT_LOG_DIR=./logs/ 
-
-聊天内容日志保存类型，file:文件,mysql:mysql数据库，如果是 file 需要配置 CHAT_LOG_DIR (聊天记录保存目录)，如果是 myslq 需要配置数据库相关。
-
-CHAT_LOG_TYPE=file
-
-更多参见.env.example
 
 启动停止(Linux系统)
 =====
