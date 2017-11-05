@@ -4,7 +4,7 @@
   <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jquery-sinaEmotion-2.1.0.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-	
+
   <script type="text/javascript" src="/js/swfobject.js"></script>
   <script type="text/javascript" src="/js/web_socket.js"></script>
   <script type="text/javascript" src="/js/jquery.min.js"></script>
@@ -25,7 +25,7 @@
        // 当socket连接打开时，输入用户名
        ws.onopen = onopen;
        // 当有消息时根据消息类型显示不同信息
-       ws.onmessage = onmessage; 
+       ws.onmessage = onmessage;
        ws.onclose = function() {
     	  console.log("连接关闭，定时重连");
           connect();
@@ -68,7 +68,7 @@
                 }
                 else
                 {
-                    client_list[data['client_id']] = data['client_name']; 
+                    client_list[data['client_id']] = data['client_name'];
                 }
                 flush_client_list();
                 console.log(data['client_name']+"登录成功");
@@ -84,16 +84,30 @@
                 say(data['from_client_id'], data['from_client_name'], data['from_client_name']+' 退出了', data['time']);
                 delete client_list[data['from_client_id']];
                 flush_client_list();
+                break;
+            //错误处理
+            case "error":
+                alert(data['msg']);
+                //昵称不能重复
+                if(data['code'] === 101)
+                {
+                    show_prompt();
+                    // 登录
+                    var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":"<?php echo isset($_GET['room_id']) ? $_GET['room_id'] : 1?>"}';
+                    console.log("websocket握手成功，发送登录数据:"+login_data);
+                    ws.send(login_data);
+                }
+
         }
     }
 
     // 输入姓名
-    function show_prompt(){  
+    function show_prompt(){
         name = prompt('输入你的名字：', '');
-        if(!name || name=='null'){  
+        if(!name || name=='null'){
             name = '游客';
         }
-    }  
+    }
 
     // 提交对话
     function onSubmit() {
