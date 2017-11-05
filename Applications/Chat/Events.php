@@ -43,9 +43,6 @@ class Events
         {
             return ;
         }
-
-	   $client_name_list =  new App\Service\ClientName();
-
         
         // 根据类型执行不同的业务
         switch($message_data['type'])
@@ -63,21 +60,7 @@ class Events
                 
                 // 把房间号昵称放到session中
                 $room_id = $message_data['room_id'];
-	            $client_name = htmlspecialchars($message_data['client_name']);
-
-	            //同一个聊天室昵称不能重复
-                if($client_name_list->exists($room_id,$client_name))
-                {
-	                $new_message = array(
-		                'type'=>'error',
-		                'code'=> 101,
-		                'msg'=> "同一个聊天室昵称不能重复",
-	                );
-	                Gateway::sendToCurrentClient(json_encode($new_message));
-	                return;
-                }
-
-	            $client_name_list->add($room_id,$client_name);
+                $client_name = htmlspecialchars($message_data['client_name']);
                 $_SESSION['room_id'] = $room_id;
                 $_SESSION['client_name'] = $client_name;
               
@@ -125,10 +108,42 @@ class Events
                     return Gateway::sendToCurrentClient(json_encode($new_message));
                 }
 
-                //日志保存 如果没有设置CHAT_LOG_TYPE就不会保存
                 $chat_log_type = getenv("CHAT_LOG_TYPE");
-                $chatLog = new \App\Service\ChatLog($chat_log_type);
-	            $chatLog->add($_SERVER['REMOTE_ADDR'],$client_name,$message_data['content']);
+                if($chat_log_type == "file")
+                {
+	                //记录聊天日志文件
+	                $log = ['ip'=>$_SERVER['REMOTE_ADDR'],
+	                        'name'=>$client_name,
+	                        'content'=>$message_data['content'],
+	                        'time'=>date('Y-m-d H:i:s')
+	                ];
+
+	                $log_dir = getenv("CHAT_LOG_DIR");
+	                if(!file_exists($log_dir))
+	                {
+		                if(mkdir($log_dir,777))
+			                echo "成功创建聊天记录保存目录{$log_dir}\n";
+		                else
+			                echo "聊天记录保存目录{$log_dir} 创建失败，请手动创建\n";
+	                }
+
+	                $log_file = $log_dir . "chat" . date('Y-m-d') . ".log";
+	                file_put_contents($log_file,json_encode($log,JSON_UNESCAPED_UNICODE) . "\n",FILE_APPEND);
+                }
+                elseif($chat_log_type == "mysql")
+                {
+	                global $db;
+	                // 插入
+	                $insert_id = $db->insert('chat_logs')->cols([
+		                'ip'      => $_SERVER[ 'REMOTE_ADDR' ],
+		                'name'    => $client_name,
+		                'content' => $message_data[ 'content' ],
+		                'time'    => date('Y-m-d H:i:s')
+	                ])->query();
+                }
+
+
+
 
                 $new_message = array(
                     'type'=>'say', 
@@ -150,16 +165,12 @@ class Events
    {
        // debug
        echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']}  client_id:$client_id onClose:''\n";
-
-	   $client_name_list = new App\Service\ClientName();
-
+       
        // 从房间的客户端列表中删除
        if(isset($_SESSION['room_id']))
        {
            $room_id = $_SESSION['room_id'];
-	       $client_name = $_SESSION['client_name'];
            $new_message = array('type'=>'logout', 'from_client_id'=>$client_id, 'from_client_name'=>$_SESSION['client_name'], 'time'=>date('Y-m-d H:i:s'));
-	       $client_name_list->remove($room_id,$client_name);
            Gateway::sendToGroup($room_id, json_encode($new_message));
        }
    }

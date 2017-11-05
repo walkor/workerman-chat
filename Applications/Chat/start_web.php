@@ -30,6 +30,4 @@ if(!defined('GLOBAL_START'))
 {
     Worker::runAll();
 }
-$client_name_list = new \App\Service\ClientName();
-$client_name_list->removeAll();
 
