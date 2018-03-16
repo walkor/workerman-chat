@@ -32,9 +32,7 @@ GatewayWorker框架文档：http://www.workerman.net/gatewaydoc/
 
 启动(windows系统)
 ======
-windows版本请到这里下载，启动方式参考下面源码中README.md
-
-https://github.com/walkor/workerman-chat-for-win/archive/master.zip
+双击start_for_win.bat  
 
 注意：  
 windows系统下无法使用 stop reload status 等命令  
