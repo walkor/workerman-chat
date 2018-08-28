@@ -189,5 +189,24 @@
 	    </div>
     </div>
     <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7b1919221e89d2aa5711e4deb935debd' type='text/javascript'%3E%3C/script%3E"));</script>
+    <script type="text/javascript">
+      // 动态自适应屏幕
+      document.write('<meta name="viewport" content="width=device-width,initial-scale=1">');
+      $("textarea").on("keydown", function(e) {
+          // 按enter键自动提交
+          if(e.keyCode === 13 && !e.ctrlKey) {
+              e.preventDefault();
+              $('form').submit();
+              return false;
+          }
+
+          // 按ctrl+enter组合键换行
+          if(e.keyCode === 13 && e.ctrlKey) {
+              $(this).val(function(i,val){
+                  return val + "\n";
+              });
+          }
+      });
+    </script>
 </body>
 </html>
