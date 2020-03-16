@@ -23,7 +23,7 @@ $web = new Worker("http://0.0.0.0:55151");
 // WebServer进程数量
 $web->count = 2;
 
-define('WEBROOT', __DIR__ . '/Web');
+define('WEBROOT', __DIR__ . DIRECTORY_SEPARATOR .  'Web');
 
 $web->onMessage = function (TcpConnection $connection, Request $request) {
     $path = $request->path();
