@@ -26,6 +26,7 @@ $web->count = 2;
 define('WEBROOT', __DIR__ . DIRECTORY_SEPARATOR .  'Web');
 
 $web->onMessage = function (TcpConnection $connection, Request $request) {
+    $_GET = $request->get();
     $path = $request->path();
     if ($path === '/') {
         $connection->send(exec_php_file(WEBROOT.'/index.php'));
