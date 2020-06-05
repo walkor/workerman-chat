@@ -56,7 +56,7 @@
         switch(data['type']){
             // 服务端ping客户端
             case 'ping':
-                ws.send('{"type":"pong"}');
+                ws.send('{"type":"ping"}');
                 break;;
             // 登录 更新用户列表
             case 'login':
