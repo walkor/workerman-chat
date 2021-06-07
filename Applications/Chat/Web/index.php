@@ -16,7 +16,15 @@
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     // 开启flash的websocket debug
     WEB_SOCKET_DEBUG = true;
-    var ws, name, client_list={};
+    var ws, name, client_list={},room_id,client_id;
+
+    room_id = getQueryString('room_id')?getQueryString('room_id'):1;
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    } 
 
     // 连接服务端
     function connect() {
@@ -43,7 +51,7 @@
             show_prompt();
         }
         // 登录
-        var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":"<?php echo isset($_GET['room_id']) ? $_GET['room_id'] : 1?>"}';
+        var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":'+room_id+'}';
         console.log("websocket握手成功，发送登录数据:"+login_data);
         ws.send(login_data);
     }
@@ -60,16 +68,20 @@
                 break;;
             // 登录 更新用户列表
             case 'login':
-                //{"type":"login","client_id":xxx,"client_name":"xxx","client_list":"[...]","time":"xxx"}
-                say(data['client_id'], data['client_name'],  data['client_name']+' 加入了聊天室', data['time']);
+                var client_name = data['client_name'];
                 if(data['client_list'])
                 {
+                    client_id = data['client_id'];
+                    client_name = '你';
                     client_list = data['client_list'];
                 }
                 else
                 {
                     client_list[data['client_id']] = data['client_name']; 
                 }
+
+                say(data['client_id'], data['client_name'],  client_name+' 加入了聊天室', data['time']);
+
                 flush_client_list();
                 console.log(data['client_name']+"登录成功");
                 break;
@@ -115,7 +127,9 @@
     	client_list_slelect.append('<option value="all" id="cli_all">所有人</option>');
     	for(var p in client_list){
             userlist_window.append('<li id="'+p+'">'+client_list[p]+'</li>');
-            client_list_slelect.append('<option value="'+p+'">'+client_list[p]+'</option>');
+            if (p!=client_id) {
+                client_list_slelect.append('<option value="'+p+'">'+client_list[p]+'</option>');   
+            }
         }
     	$("#client_list").val(select_client_id);
     	userlist_window.append('</ul>');
@@ -174,7 +188,7 @@
                     </div>
                </form>
                <div>
-               &nbsp;&nbsp;&nbsp;&nbsp;<b>房间列表:</b>（当前在&nbsp;房间<?php echo isset($_GET['room_id'])&&intval($_GET['room_id'])>0 ? intval($_GET['room_id']):1; ?>）<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<b>房间列表:</b>（当前在&nbsp;房间<script>document.write(room_id)</script>）<br>
                &nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=1">房间1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=2">房间2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=3">房间3</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=4">房间4</a>
                <br><br>
                </div>
