@@ -1,6 +1,6 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>web聊天系统-非交友匿名聊天室</title>
+  <title>workerman-chat PHP聊天室 Websocket(HTLM5/Flash)+PHP多进程socket实时推送技术</title>
   <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jquery-sinaEmotion-2.1.0.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -87,10 +87,12 @@
                 break;
             // 发言
             case 'say':
+                //{"type":"say","from_client_id":xxx,"to_client_id":"all/client_id","content":"xxx","time":"xxx"}
                 say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);
                 break;
             // 用户退出 更新用户列表
             case 'logout':
+                //{"type":"logout","client_id":xxx,"time":"xxx"}
                 say(data['from_client_id'], data['from_client_name'], data['from_client_name']+' 退出了', data['time']);
                 delete client_list[data['from_client_id']];
                 flush_client_list();
@@ -190,11 +192,13 @@
                &nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=1">房间1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=2">房间2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=3">房间3</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=4">房间4</a>
                <br><br>
                </div>
+               <p class="cp">PHP多进程+Websocket(HTML5/Flash)+PHP Socket实时推送技术&nbsp;&nbsp;&nbsp;&nbsp;Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
 	        </div>
 	        <div class="col-md-3 column">
 	           <div class="thumbnail">
                    <div class="caption" id="userlist"></div>
                </div>
+               <a href="http://workerman.net:8383" target="_blank"><img style="width:252px;margin-left:5px;" src="/img/workerman-todpole.png"></a>
 	        </div>
 	    </div>
     </div>
