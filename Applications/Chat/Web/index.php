@@ -1,6 +1,6 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>workerman-chat PHP聊天室 Websocket(HTLM5/Flash)+PHP多进程socket实时推送技术</title>
+  <title>web聊天系统-非交友匿名聊天室</title>
   <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jquery-sinaEmotion-2.1.0.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -16,7 +16,15 @@
     WEB_SOCKET_SWF_LOCATION = "/swf/WebSocketMain.swf";
     // 开启flash的websocket debug
     WEB_SOCKET_DEBUG = true;
-    var ws, name, client_list={};
+    var ws, name, client_list={},room_id,client_id;
+
+    room_id = getQueryString('room_id')?getQueryString('room_id'):1;
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    } 
 
     // 连接服务端
     function connect() {
@@ -43,7 +51,7 @@
             show_prompt();
         }
         // 登录
-        var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":"<?php echo isset($_GET['room_id']) ? $_GET['room_id'] : 1?>"}';
+        var login_data = '{"type":"login","client_name":"'+name.replace(/"/g, '\\"')+'","room_id":'+room_id+'}';
         console.log("websocket握手成功，发送登录数据:"+login_data);
         ws.send(login_data);
     }
@@ -60,27 +68,29 @@
                 break;;
             // 登录 更新用户列表
             case 'login':
-                //{"type":"login","client_id":xxx,"client_name":"xxx","client_list":"[...]","time":"xxx"}
-                say(data['client_id'], data['client_name'],  data['client_name']+' 加入了聊天室', data['time']);
+                var client_name = data['client_name'];
                 if(data['client_list'])
                 {
+                    client_id = data['client_id'];
+                    client_name = '你';
                     client_list = data['client_list'];
                 }
                 else
                 {
                     client_list[data['client_id']] = data['client_name']; 
                 }
+
+                say(data['client_id'], data['client_name'],  client_name+' 加入了聊天室', data['time']);
+
                 flush_client_list();
                 console.log(data['client_name']+"登录成功");
                 break;
             // 发言
             case 'say':
-                //{"type":"say","from_client_id":xxx,"to_client_id":"all/client_id","content":"xxx","time":"xxx"}
                 say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);
                 break;
             // 用户退出 更新用户列表
             case 'logout':
-                //{"type":"logout","client_id":xxx,"time":"xxx"}
                 say(data['from_client_id'], data['from_client_name'], data['from_client_name']+' 退出了', data['time']);
                 delete client_list[data['from_client_id']];
                 flush_client_list();
@@ -115,7 +125,9 @@
     	client_list_slelect.append('<option value="all" id="cli_all">所有人</option>');
     	for(var p in client_list){
             userlist_window.append('<li id="'+p+'">'+client_list[p]+'</li>');
-            client_list_slelect.append('<option value="'+p+'">'+client_list[p]+'</option>');
+            if (p!=client_id) {
+                client_list_slelect.append('<option value="'+p+'">'+client_list[p]+'</option>');   
+            }
         }
     	$("#client_list").val(select_client_id);
     	userlist_window.append('</ul>');
@@ -174,17 +186,15 @@
                     </div>
                </form>
                <div>
-               &nbsp;&nbsp;&nbsp;&nbsp;<b>房间列表:</b>（当前在&nbsp;房间<?php echo isset($_GET['room_id'])&&intval($_GET['room_id'])>0 ? intval($_GET['room_id']):1; ?>）<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<b>房间列表:</b>（当前在&nbsp;房间<script>document.write(room_id)</script>）<br>
                &nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=1">房间1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=2">房间2</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=3">房间3</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/?room_id=4">房间4</a>
                <br><br>
                </div>
-               <p class="cp">PHP多进程+Websocket(HTML5/Flash)+PHP Socket实时推送技术&nbsp;&nbsp;&nbsp;&nbsp;Powered by <a href="http://www.workerman.net/workerman-chat" target="_blank">workerman-chat</a></p>
 	        </div>
 	        <div class="col-md-3 column">
 	           <div class="thumbnail">
                    <div class="caption" id="userlist"></div>
                </div>
-               <a href="http://workerman.net:8383" target="_blank"><img style="width:252px;margin-left:5px;" src="/img/workerman-todpole.png"></a>
 	        </div>
 	    </div>
     </div>
