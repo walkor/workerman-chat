@@ -5,12 +5,13 @@
     "homepage": "http://www.workerman.net",
     "license" : "MIT",
     "require": {
-        "workerman/gateway-worker" : ">=3.0.0",
-        "workerman/workerman" : "~4.0.0"
+        "workerman/gateway-worker" : "v3.0.23",
+        "workerman/workerman" : "^v4.0.0"
     },
     "autoload": {
         "psr-4": {
-            "" : "./"
+            "" : "./",
+            "" : "./Applications/Chat/"
         }
     }
 }
