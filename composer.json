@@ -2,16 +2,17 @@
     "name"  : "workerman/workerman-chat",
     "type"  : "project",
     "keywords": ["chat"],
-    "homepage": "http://www.workerman.net",
+    "homepage": "https://www.workerman.net",
     "license" : "MIT",
     "require": {
-        "workerman/gateway-worker" : "v3.0.23",
-        "workerman/workerman" : "^v4.0.0"
+        "workerman/gateway-worker" : "^v3.0.23||^4.0.0",
+        "ext-json": "*",
+        "revolt/event-loop": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "" : "./",
-            "" : "./Applications/Chat/"
+            "": "./",
+            "": "./Applications/Chat/"
         }
     }
 }
