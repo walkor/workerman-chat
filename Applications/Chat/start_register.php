@@ -16,8 +16,8 @@ use \GatewayWorker\Register;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-// register 服务必须是text协议
-$register = new Register('text://0.0.0.0:1236');
+// register 服务必须是text协议，监听地址请用内网ip或者127.0.0.1。register服务不能被外网访问。
+$register = new Register('text://127.0.0.1:1236');
 
 // 如果不是在根目录启动，则运行runAll方法
 if(!defined('GLOBAL_START'))
