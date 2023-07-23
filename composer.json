@@ -6,8 +6,7 @@
     "license" : "MIT",
     "require": {
         "workerman/gateway-worker" : "^v3.0.23||^4.0.0",
-        "ext-json": "*",
-        "revolt/event-loop": "^1.0"
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
